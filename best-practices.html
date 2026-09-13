@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>I-REACCH | Best Practices</title>
+
+  <link rel="stylesheet" href="assets/css/brand.css" />
+  <link rel="stylesheet" href="assets/css/header.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <style>
+    :root{
+      --gradA:var(--grad-a);
+      --gradB:var(--grad-b);
+      --muted-strong:#384454;
+      --bg:#fff;
+      --ok:#2ea44f; --warn:#e3a008; --no:#cf3d3d;
+    }
+
+    /* ===== Top header ===== */
+    .overview-bar{ background:#cfe4e7; padding:22px 0; border-bottom:1px solid #c3d6d9; }
+    .overview-inner{ max-width:var(--page-max); margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .brand-wrap{ display:flex; align-items:center; gap:14px; }
+    .brand-wrap img{ height:48px; width:auto; display:block; }
+    .titles{ display:flex; flex-direction:column; }
+    .page-title{ font-size:clamp(1.75rem,4vw,2.35rem); line-height:1.15; font-weight:800; color:#1b2a41; }
+    .page-sub{ margin-top:6px; font-size:1rem; line-height:1.5; color:var(--muted); }
+    .back-link{ font-weight:700; font-size:15px; color:#245b74; text-decoration:none; padding:8px 12px; border-radius:8px; }
+    .back-link:hover{ background:rgba(0,0,0,.05); }
+
+    /* ===== Page container ===== */
+    .bp-container{ max-width:1320px; margin:28px auto 0; padding:0 28px 56px; }
+    @media(max-width:640px){ .bp-container{ padding:0 16px 48px; } }
+
+    /* ===== Page guidance (collapsible) ===== */
+    .bp-guide{
+      background:#eef6f8; border:1px solid #c3d8dc;
+      border-radius:14px; padding:11px 16px; margin-bottom:12px;
+    }
+    .bp-guide summary{
+      font-weight:600; font-size:.82rem; color:#4a7fa5;
+      cursor:pointer; list-style:none; user-select:none;
+    }
+    .bp-guide summary::-webkit-details-marker{ display:none; }
+    .bp-guide summary::marker{ display:none; }
+    .bp-guide-body{ margin-top:8px; font-size:.83rem; color:#4a5a68; line-height:1.6; }
+    .bp-guide-body p{ margin:0 0 6px; }
+    .bp-guide-body p:last-child{ margin-bottom:0; }
+
+    /* ===== Shared panel ===== */
+    .bp-panel{
+      background:#fff; border:1px solid var(--border);
+      border-radius:20px; box-shadow:0 12px 32px rgba(28,39,51,.07);
+    }
+    .bp-pad{ padding:28px 32px; }
+    @media(max-width:640px){ .bp-pad{ padding:20px; } }
+
+    /* ===== Top action bar (browse panel) ===== */
+    .bp-topbar{ display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px; }
+    .bp-topbar-eyebrow{ font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4a7fa5; display:block; margin-bottom:5px; }
+    .bp-topbar h2{ margin:0; font-size:1.55rem; font-weight:800; color:#1b2a41; }
+
+    /* ===== Submit form panel (collapsed by default) ===== */
+    .submit-panel{
+      overflow:hidden; max-height:0;
+      transition:max-height .35s ease, opacity .25s ease;
+      opacity:0; margin-bottom:0;
+    }
+    .submit-panel.open{ max-height:2400px; opacity:1; margin-bottom:20px; }
+    .submit-panel-inner{
+      background:#fff; border:1px solid var(--border);
+      border-radius:20px; box-shadow:0 12px 32px rgba(28,39,51,.07);
+      padding:28px 32px;
+    }
+    @media(max-width:640px){ .submit-panel-inner{ padding:20px; } }
+    .submit-panel-eyebrow{ font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4a7fa5; display:block; margin-bottom:6px; }
+    .submit-panel h2{ margin:0 0 18px; font-size:1.3rem; font-weight:800; color:#1b2a41; }
+
+    /* ===== Form labels ===== */
+    .submit-panel label{
+      display:block; font-weight:600; margin:18px 0 6px; font-size:.87rem;
+      color:#4a5c6e;
+    }
+    .submit-panel label:first-of-type{ margin-top:0; }
+    .bp-panel label{
+      display:block; font-weight:600; margin:8px 0 4px; font-size:.86rem; color:var(--muted);
+    }
+    label.bp-hint{
+      text-transform:none; letter-spacing:0; font-size:.86rem;
+      font-weight:600; margin:0 0 4px; display:block;
+    }
+
+    /* ===== Form controls ===== */
+    .bp-input,.bp-select,.bp-textarea{
+      width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:12px;
+      font:inherit; background:var(--bg); box-sizing:border-box; color:#1b2a41;
+    }
+    .bp-input:focus,.bp-select:focus,.bp-textarea:focus{ outline:2px solid var(--gradA); outline-offset:2px; }
+    .bp-textarea{ min-height:140px; resize:vertical; }
+
+    /* School "Other" fallback input */
+    .bp-school-other{ margin-top:8px; }
+
+    /* ===== Buttons ===== */
+    .bp-btn{
+      appearance:none; border:0; border-radius:999px; padding:12px 24px;
+      font-weight:800; font-size:.95rem; cursor:pointer;
+      background:linear-gradient(135deg,var(--grad-a),var(--grad-b)); color:#fff;
+      min-height:44px;
+    }
+    .bp-btn.ghost{
+      background:transparent; border:1px solid var(--border);
+      color:var(--muted); padding:11px 20px; font-weight:700;
+    }
+    .bp-btn.ghost:hover{ background:#f5f8ff; }
+    .bp-btn:focus{ outline:2px solid var(--gradA); outline-offset:3px; }
+
+    .bp-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .bp-hint{ font-size:.84rem; color:#a0aab8; }
+    .bp-help{ font-size:.84rem; color:#708090; margin-top:4px; }
+    .bp-form-intro{ margin:0 0 18px; color:var(--muted); font-size:.9rem; line-height:1.55; }
+    .bp-required{ color:#8b2430 !important; font-weight:700; }
+    .bp-field-error{ margin:5px 0 0; color:#a61d24; font-size:.84rem; font-weight:700; }
+    .bp-form-errors{ margin:0 0 12px; padding:10px 12px; color:#8b1720; background:#fff2f2; border-left:4px solid #c81e2a; border-radius:6px; font-weight:700; }
+    .bp-feedback{ margin:0 0 18px; padding:12px 16px; color:#175c35; background:#eaf7ef; border:1px solid #82c69b; border-radius:10px; font-weight:750; }
+
+    .counter{ display:flex; justify-content:flex-end; font-size:.8rem; color:#708090; margin-top:2px; }
+
+    /* ===== Tag chip toggles (submit form) ===== */
+    .bp-tag-chip-group{ display:flex; gap:7px; flex-wrap:wrap; margin-top:8px; }
+    .bp-tag-chip-btn{
+      appearance:none; border:1px solid #dde4ec; border-radius:999px;
+      padding:7px 11px; min-height:36px; font:inherit; font-weight:600; font-size:.8rem;
+      cursor:pointer; background:#fff; color:#7a8fa0;
+      transition:background .15s, color .15s, border-color .15s, opacity .15s;
+    }
+    .bp-tag-chip-btn:hover{ border-color:#a58de0; }
+    .bp-tag-chip-btn.selected{ background:#efeaff; border-color:#b89ef5; color:#3d1a8a; }
+    .bp-tag-chip-btn:focus{ outline:2px solid var(--gradA); outline-offset:2px; }
+
+    /* Selected tag pills (submit form) */
+    .bp-tag-pills{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+    .bp-tag-pill-item{
+      display:inline-flex; align-items:center; gap:4px;
+      background:#efeaff; border:1px solid #b89ef5; color:#3d1a8a;
+      border-radius:999px; padding:4px 10px; font-weight:700; font-size:.82rem;
+    }
+    .bp-tag-pill-item button{
+      appearance:none; background:none; border:none; cursor:pointer;
+      padding:0 0 0 2px; font-size:.9em; line-height:1;
+      color:#3d1a8a; font-weight:700;
+    }
+    .bp-tag-pill-item button:hover{ color:#1b0060; }
+    .bp-tag-pill-item button:focus{ outline:2px solid var(--gradA); outline-offset:1px; border-radius:50%; }
+
+    /* Custom tag input row */
+    .bp-custom-tag-row{ margin-top:10px; }
+    .bp-tag-hint{ font-size:.75rem; color:#b0bbc6; margin-top:3px; }
+
+    /* Submit form: breathing room refinements */
+    .submit-panel label > span{ color:#9ab8c6; }
+    .submit-panel .counter + label{ margin-top:24px; }
+    .bp-tag-chip-group{ margin-top:10px; }
+    .bp-tag-pills{ margin:10px 0 4px; }
+    .bp-trust-note{ font-size:.84rem; color:#708090; }
+
+    /* ===== Evidence level pills (submit form) ===== */
+    .ev-pills{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .ev-btn{
+      appearance:none; border-radius:999px; padding:6px 14px; font-weight:700;
+      font-size:.84rem; cursor:pointer; background:#fff;
+      color:var(--muted); border:1px solid var(--border);
+      transition:background .15s,color .15s,border-color .15s;
+    }
+    .ev-btn:focus{ outline:2px solid var(--gradA); outline-offset:2px; }
+    .ev-btn.active.emerging{    background:#fff4de; border-color:#c98a00; color:#7a5800; }
+    .ev-btn.active.established{ background:#eaf7f1; border-color:#2ea44f; color:#155724; }
+    .ev-btn.active.evidenced{   background:#eaf5ff; border-color:#0c5ea8; color:#0c5ea8; }
+
+    /* ===== Trust note ===== */
+    .bp-trust-note{
+      margin:12px 0 0; font-size:.77rem;
+      color:#a8b4c0; line-height:1.55;
+    }
+
+    .draft-status{ font-size:.85rem; color:var(--muted); display:none; }
+
+    /* ===== Browse toolbar ===== */
+    .bp-toolbar{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; align-items:center; }
+    .bp-field{ flex:1 1 200px; position:relative; }
+    .bp-cnt{ color:var(--muted); font-size:.88rem; margin-left:auto; white-space:nowrap; }
+    .bp-sort{ min-width:170px; }
+
+    /* Search icon — CSS-only, no HTML changes required */
+    #q{
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a0aab8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-position:12px center;
+      background-size:15px 15px;
+      padding-left:36px;
+    }
+
+    /* ===== Active filter pills ===== */
+    .bp-filter-pills{ display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 14px; }
+    .bp-pill{
+      background:var(--chip); color:var(--muted-strong);
+      border:1px solid var(--border); border-radius:999px;
+      padding:4px 10px; font-weight:600; font-size:.85rem;
+    }
+    .bp-pill button{ border:0; background:transparent; margin-left:6px; cursor:pointer; }
+
+    /* ===== Cards grid ===== */
+    .bp-cards{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media(max-width:960px){ .bp-cards{ grid-template-columns:1fr; } }
+
+    /* ===== Card ===== */
+    .bp-card{
+      border:1px solid #d8e2ec; border-radius:18px; background:#fff;
+      padding:22px 26px; display:flex; flex-direction:column; gap:14px;
+      box-shadow:0 8px 22px rgba(28,39,51,.07);
+    }
+    .bp-card h3{ margin:0; font-size:1rem; font-weight:800; color:#1b2a41; line-height:1.35; }
+    .bp-badge{ display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px; background:#eaf5ff; color:#0c5ea8; font-weight:600; font-size:.82rem; }
+    .bp-sub{ color:var(--muted); margin:0; font-size:.88rem; line-height:1.62; }
+
+    /* ===== Tags on cards ===== */
+    .bp-tags{ display:flex; gap:8px; row-gap:6px; flex-wrap:wrap; }
+    .bp-chip{ background:var(--chip); color:var(--muted-strong); padding:3px 9px; border:1px solid var(--border); border-radius:999px; font-weight:600; font-size:.79rem; }
+    .bp-tag-btn{ background:var(--chip); color:var(--muted-strong); border:1px solid var(--border); border-radius:999px; padding:3px 9px; font-weight:600; font-size:.79rem; cursor:pointer; }
+    .bp-tag-btn:focus{ outline:2px solid var(--gradA); outline-offset:2px; }
+    .bp-sep{ height:1px; background:var(--border); border-radius:1px; }
+
+    /* ===== Evidence badge on cards ===== */
+    .ev-badge{ display:inline-flex; align-items:center; padding:3px 9px; border-radius:999px; font-weight:700; font-size:.78rem; }
+    .ev-badge.emerging{    background:#fff4de; color:#7a5800; border:1px solid #f0d075; }
+    .ev-badge.established{ background:#eaf7f1; color:#155724; border:1px solid #78c99a; }
+    .ev-badge.evidenced{   background:#eaf5ff; color:#0c5ea8; border:1px solid #7fbde8; }
+
+    /* ===== Four-option structured vote ===== */
+    .bp-vote-group{ display:flex; flex-direction:column; gap:6px; }
+    .bp-vote-label{ font-size:.75rem; font-weight:600; color:#96a4b0; margin-bottom:0; }
+    .bp-vote-opts{ display:flex; gap:6px; flex-wrap:wrap; }
+    .bp-vote-btn{
+      appearance:none; border:1px solid var(--border); background:#fff;
+      color:#1c2733; border-radius:999px; padding:6px 12px;
+      font-weight:700; font-size:.8rem; cursor:pointer;
+      transition:background .15s,color .15s,border-color .15s;
+    }
+    .bp-vote-btn:focus{ outline:2px solid var(--gradA); outline-offset:2px; }
+    .bp-vote-btn.v-active.opt-active{   background:var(--ok);  border-color:var(--ok);  color:#fff; }
+    .bp-vote-btn.v-active.opt-consider{ background:var(--warn);border-color:var(--warn);color:#fff; }
+    .bp-vote-btn.v-active.opt-mixed{    background:#6b7d94;    border-color:#6b7d94;    color:#fff; }
+    .bp-vote-btn.v-active.opt-na{       background:#9aa4b2;    border-color:#9aa4b2;    color:#fff; }
+    .bp-vote-count{ font-size:.78rem; color:#a8b4bf; margin-top:2px; }
+    .bp-local-note{ font-size:.76rem; color:var(--muted); margin:1px 0 0; }
+
+    /* Vote legend */
+    .bp-vote-legend{ font-size:.78rem; color:var(--muted); margin-top:6px; line-height:1.6; }
+
+    /* Smooth comment box reveal */
+    .bp-reason-wrap{
+      margin-top:8px; overflow:hidden;
+      max-height:0; opacity:0;
+      transition:max-height .25s ease, opacity .2s ease;
+    }
+    .bp-reason-wrap.bp-reason-visible{ max-height:220px; opacity:1; }
+
+    /* Example entry */
+    .bp-example{ margin-bottom:14px; }
+    .bp-example-heading{
+      font-size:.78rem; font-weight:600; color:#6b8fa8;
+      cursor:pointer; list-style:none; user-select:none;
+      display:inline-flex; align-items:center; gap:4px; margin:0;
+      padding:4px 0;
+    }
+    .bp-example-heading::-webkit-details-marker{ display:none; }
+    .bp-example-heading::marker{ display:none; }
+    .bp-example-heading::after{ content:'▸'; font-size:.65rem; transition:transform .2s; }
+    .bp-example[open] .bp-example-heading::after{ transform:rotate(90deg); }
+    .bp-example-body{ margin-top:14px; }
+    .bp-card--example{ border-style:dashed; border-color:#b8cfe0; background:#f8fbfd; box-shadow:none; }
+    .bp-example-badge{
+      font-size:.72rem; font-weight:700; background:#e8f4fd;
+      color:#2977c9; border-radius:999px; padding:2px 8px;
+      letter-spacing:.04em; text-transform:uppercase; flex-shrink:0;
+    }
+    .bp-empty{ padding:22px 24px; color:var(--muted); border:1px dashed var(--border); border-radius:14px; background:#fff; }
+
+    /* ===== Hero banner ===== */
+    .bp-hero{
+      background:#eef6f8; border:1px solid #c3d8dc;
+      border-radius:16px; padding:18px 24px; margin-bottom:22px;
+      display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    }
+    .bp-hero-left{ display:flex; align-items:center; gap:16px; }
+    .bp-hero-icon-wrap{
+      width:52px; height:52px; border-radius:50%; flex-shrink:0;
+      background:#d4e9f2; border:1.5px solid #b0cfe0;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .bp-hero-icon{ width:24px; height:24px; flex-shrink:0; color:#2a6880; }
+    .bp-hero-eyebrow{ font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4a7fa5; margin:0 0 4px; display:block; }
+    .bp-hero-heading{ font-size:1.05rem; font-weight:800; color:#1b2a41; margin:0 0 2px; }
+    .bp-hero-sub{ font-size:.84rem; color:var(--muted); margin:0; }
+
+    /* ===== Split layout ===== */
+    .bp-split{ display:grid; grid-template-columns:1.18fr 2fr; gap:28px; align-items:start; }
+    .bp-split-right{ min-width:0; }
+    @media(min-width:901px){
+      .bp-split-left .submit-panel.open{ max-height:none !important; opacity:1 !important; overflow:visible !important; margin-bottom:0 !important; }
+      #toggleSubmit{ display:none; }
+    }
+    @media(max-width:900px){
+      .bp-split{ grid-template-columns:1fr; }
+      .bp-split-right{ order:1; }
+      .bp-split-left{ order:2; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container bar">
+      <a class="logo" href="index.html" aria-label="I-REACCH Evaluation Toolkit home"><img src="assets/img/ireacch-logo.png" alt="I-REACCH"></a>
+      <nav id="primary-nav" class="nav" aria-label="Primary">
+        <a href="index.html">Toolkit home</a>
+        <a href="micro-surveys.html">Micro-surveys</a>
+        <a href="reflection.html">Reflection Space</a>
+        <a href="best-practices.html" aria-current="page">Best Practices</a>
+        <a href="dashboard.html">Dashboard</a>
+      </nav>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation">
+        <svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true"><rect y="0" width="22" height="2" rx="1"/><rect y="7" width="22" height="2" rx="1"/><rect y="14" width="22" height="2" rx="1"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <section class="overview-bar" aria-labelledby="page-title">
+    <div class="overview-inner">
+      <div class="brand-wrap">
+        <div class="titles">
+          <h1 class="page-title" id="page-title">Best Practices</h1>
+          <div class="page-sub">Browse what Schools and Colleges are doing — and share what works for you.</div>
+        </div>
+      </div>
+      <a class="back-link" href="index.html">&larr; Toolkit home</a>
+    </div>
+  </section>
+
+  <main class="bp-container" id="main-content" tabindex="-1">
+
+    <!-- ===== Page guidance (collapsible) ===== -->
+    <details class="bp-guide" id="bp-guide">
+      <summary>How to browse and contribute &#9660;</summary>
+      <div class="bp-guide-body">
+        <p><strong>Step 1 — Browse.</strong> Use the search and filter tools below to find practices from other Schools and Colleges. Click any tag on a card to filter by that theme.</p>
+        <p><strong>Step 2 — Vote.</strong> On each card, tell us whether your School does something similar, is considering it, has had mixed results, or finds it not applicable. This helps others understand how widely a practice is used across the University.</p>
+        <p><strong>Step 3 — Share.</strong> Use “Share a practice” to add a temporary preview to this page. This prototype does not submit it to the WS5 team.</p>
+      </div>
+    </details>
+
+    <!-- ===== Hero banner ===== -->
+    <div class="bp-hero">
+      <div class="bp-hero-left">
+        <div class="bp-hero-icon-wrap">
+          <svg class="bp-hero-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="18" cy="5" r="3"/>
+            <circle cx="6"  cy="12" r="3"/>
+            <circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51"  x2="8.59"  y2="10.49"/>
+          </svg>
+        </div>
+        <div>
+          <span class="bp-hero-eyebrow">I-REACCH Evaluation Toolkit</span>
+          <div class="bp-hero-heading">Practices from across the University</div>
+          <p class="bp-hero-sub">Browse what Schools and Colleges are doing — and share what works for you.</p>
+        </div>
+      </div>
+      <button type="button" class="bp-btn" id="toggleSubmit" aria-expanded="true" aria-controls="submitPanel">
+        + Share a practice
+      </button>
+    </div>
+
+    <p class="bp-feedback" id="bp-feedback" role="status" aria-live="polite" hidden></p>
+
+    <!-- ===== Split layout ===== -->
+    <div class="bp-split">
+
+    <!-- LEFT: Submit form (always visible on desktop) -->
+    <div class="bp-split-left">
+    <div class="submit-panel open" id="submitPanel" aria-hidden="false">
+      <div class="submit-panel-inner">
+        <span class="submit-panel-eyebrow">Contribute</span>
+        <h2>Share a practice</h2>
+        <p class="bp-form-intro">Add an approach used by your School or College. Required fields are marked below. The final action creates a temporary preview on this page; it does not submit data.</p>
+        <p class="bp-form-errors" id="bp-form-errors" role="alert" hidden>Check the required fields below.</p>
+        <label for="bp-title">Title <span class="bp-required">(required)</span></label>
+        <input id="bp-title" class="bp-input" type="text" maxlength="80" required aria-describedby="c-title bp-title-error" placeholder="e.g., Mentoring circles for new PGRs" />
+        <div class="counter"><span id="c-title">0/80</span></div>
+        <p class="bp-field-error" id="bp-title-error" hidden>Enter a title.</p>
+
+        <label for="bp-school">School / College <span class="bp-required">(required)</span></label>
+        <select id="bp-school" class="bp-select" required aria-describedby="bp-school-error">
+          <option value="">Select your School or College&hellip;</option>
+          <option value="College of Life Sciences">College of Life Sciences</option>
+          <option value="College of Science and Engineering">College of Science and Engineering</option>
+          <option value="College of Social Sciences, Arts &amp; Humanities">College of Social Sciences, Arts &amp; Humanities</option>
+          <option value="School of Business">School of Business</option>
+          <option value="Leicester Medical School">Leicester Medical School</option>
+          <option value="School of Computing and Mathematical Sciences">School of Computing and Mathematical Sciences</option>
+          <option value="School of Education">School of Education</option>
+          <option value="School of Geography, Geology and the Environment">School of Geography, Geology and the Environment</option>
+          <option value="School of Historical Studies">School of Historical Studies</option>
+          <option value="School of Law">School of Law</option>
+          <option value="School of Museum Studies">School of Museum Studies</option>
+          <option value="School of Psychology and Vision Sciences">School of Psychology and Vision Sciences</option>
+          <option value="Doctoral College / PGR">Doctoral College / PGR</option>
+          <option value="Professional Services / Research Support">Professional Services / Research Support</option>
+          <option value="other">Other / Not listed</option>
+        </select>
+        <p class="bp-field-error" id="bp-school-error" hidden>Select a School or College.</p>
+        <input id="bp-school-other" class="bp-input bp-school-other" type="text"
+          placeholder="Please specify your School or College"
+          aria-label="Specify your School or College"
+          aria-describedby="bp-school-other-error"
+          style="display:none" />
+        <p class="bp-field-error" id="bp-school-other-error" hidden>Enter your School or College.</p>
+
+        <label for="bp-desc">Description <span class="bp-required">(required)</span></label>
+        <textarea id="bp-desc" class="bp-textarea" maxlength="800" required aria-describedby="c-desc bp-desc-error"
+          placeholder="How does it work? Who benefits? Any tips for replication? Note resources or time needed."></textarea>
+        <div class="counter"><span id="c-desc">0/800</span></div>
+        <p class="bp-field-error" id="bp-desc-error" hidden>Enter a description.</p>
+
+        <label>Tags <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional — select up to 3, or add one of your own)</span></label>
+        <div class="bp-tag-chip-group" id="bp-tag-chips" role="group" aria-label="Select tags">
+          <button type="button" class="bp-tag-chip-btn" data-tag="mentoring"      aria-pressed="false">mentoring</button>
+          <button type="button" class="bp-tag-chip-btn" data-tag="onboarding"     aria-pressed="false">onboarding</button>
+          <button type="button" class="bp-tag-chip-btn" data-tag="community"      aria-pressed="false">community</button>
+          <button type="button" class="bp-tag-chip-btn" data-tag="transparency"   aria-pressed="false">transparency</button>
+          <button type="button" class="bp-tag-chip-btn" data-tag="workload"       aria-pressed="false">workload</button>
+          <button type="button" class="bp-tag-chip-btn" data-tag="training"       aria-pressed="false">training</button>
+          <button type="button" class="bp-tag-chip-btn" data-tag="inclusion"      aria-pressed="false">inclusion</button>
+          <button type="button" class="bp-tag-chip-btn" data-tag="career support" aria-pressed="false">career support</button>
+          <button type="button" class="bp-tag-chip-btn" data-tag="recognition"    aria-pressed="false">recognition</button>
+        </div>
+        <div class="bp-tag-pills" id="bp-selected-tags" aria-label="Selected tags" aria-live="polite"></div>
+        <div class="bp-custom-tag-row">
+          <input id="bp-custom-tag" class="bp-input" type="text" maxlength="40"
+            placeholder="Or add your own tag (optional, one only)" aria-label="Add a custom tag" />
+        </div>
+
+        <label>How established is this practice? <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+        <div class="ev-pills" id="ev-pills" role="group" aria-label="Evidence level">
+          <button type="button" class="ev-btn emerging"    data-ev="emerging"    aria-pressed="false">Emerging</button>
+          <button type="button" class="ev-btn established" data-ev="established" aria-pressed="false">Established</button>
+          <button type="button" class="ev-btn evidenced"   data-ev="evidenced"   aria-pressed="false">Evidence-based</button>
+        </div>
+
+        <!-- Trust statement -->
+        <p class="bp-trust-note" role="note">This prototype adds the practice only to the current page for preview. It is not submitted or saved as a shared practice. Avoid including personal data in the description.</p>
+
+        <div class="bp-row" style="margin-top:16px;align-items:center">
+          <button class="bp-btn" id="bp-add" type="button">Add preview to this page</button>
+          <button class="bp-btn ghost" id="bp-clear" type="button">Clear</button>
+          <span id="draft-status" class="draft-status">Draft saved</span>
+        </div>
+      </div>
+    </div>
+    </div><!-- /bp-split-left -->
+
+    <!-- RIGHT: Browse panel -->
+    <div class="bp-split-right">
+    <div class="bp-panel">
+      <div class="bp-pad">
+
+        <div class="bp-topbar">
+          <div>
+            <span class="bp-topbar-eyebrow">Browse</span>
+            <h2>What are other Schools doing?</h2>
+          </div>
+        </div>
+
+        <div class="bp-toolbar">
+          <div class="bp-field">
+            <input id="q" class="bp-input" type="text" placeholder="Search title, description, or tags&hellip;" aria-label="Search practices" />
+          </div>
+          <div class="bp-field">
+            <select id="filter-school" class="bp-input bp-select" aria-label="Filter by school">
+              <option value="">All Schools / Colleges</option>
+              <option value="College of Life Sciences">College of Life Sciences</option>
+              <option value="College of Science and Engineering">College of Science and Engineering</option>
+              <option value="College of Social Sciences, Arts &amp; Humanities">College of Social Sciences, Arts &amp; Humanities</option>
+              <option value="School of Business">School of Business</option>
+              <option value="Leicester Medical School">Leicester Medical School</option>
+              <option value="School of Computing and Mathematical Sciences">School of Computing and Mathematical Sciences</option>
+              <option value="School of Education">School of Education</option>
+              <option value="School of Geography, Geology and the Environment">School of Geography, Geology and the Environment</option>
+              <option value="School of Historical Studies">School of Historical Studies</option>
+              <option value="School of Law">School of Law</option>
+              <option value="School of Museum Studies">School of Museum Studies</option>
+              <option value="School of Psychology and Vision Sciences">School of Psychology and Vision Sciences</option>
+              <option value="Doctoral College / PGR">Doctoral College / PGR</option>
+              <option value="Professional Services / Research Support">Professional Services / Research Support</option>
+            </select>
+          </div>
+          <select id="sort" class="bp-select bp-sort" aria-label="Sort results">
+            <option value="active">Sort: Most active</option>
+            <option value="newest">Sort: Newest</option>
+            <option value="az">Sort: A&ndash;Z</option>
+          </select>
+          <span id="result-count" class="bp-cnt" aria-live="polite">0 results</span>
+        </div>
+
+        <div id="active-pills" class="bp-filter-pills" style="display:none"></div>
+
+        <!-- Example entry (collapsible) -->
+        <details class="bp-example" id="bp-example">
+          <summary class="bp-example-heading">See an example entry</summary>
+          <div class="bp-example-body">
+            <div class="bp-card bp-card--example">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <h3 style="margin:0;font-size:1.05rem;font-weight:800;color:#1b2a41">Mentoring circles for early-career researchers</h3>
+                <span class="bp-example-badge">Example</span>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <span class="bp-badge">Doctoral College / PGR</span>
+                <span class="ev-badge established">Established</span>
+              </div>
+              <p class="bp-sub">Monthly peer circles of 4–6 early-career researchers with a rotating facilitator drawn from the group. Sessions are 60 minutes, structured around a shared agenda (one challenge, one win, one resource to share). No senior staff attend, keeping the space low-pressure. Requires minimal coordination — a shared calendar invite and a short briefing document.</p>
+              <div class="bp-tags">
+                <span class="bp-chip">mentoring</span>
+                <span class="bp-chip">community</span>
+              </div>
+              <p style="font-size:.82rem;color:var(--muted);margin:8px 0 0;font-style:italic">A good entry has a specific title, explains how it works and who benefits, notes what resources it needs, and uses tags to help others find it.</p>
+            </div>
+          </div>
+        </details>
+
+        <div id="cards" class="bp-cards"></div>
+        <div id="empty" class="bp-empty" style="display:none">
+          No practices match those filters.
+          <button id="clear-filters" type="button" class="bp-btn ghost" style="margin:8px 0 0">Clear filters</button>
+          or
+          <button type="button" class="bp-btn ghost" onclick="document.getElementById('toggleSubmit').click()" style="margin:0">share your own</button>.
+        </div>
+
+      </div>
+    </div>
+    </div><!-- /bp-split-right -->
+    </div><!-- /bp-split -->
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <span>Part of the <a href="https://ireacch.le.ac.uk/" target="_blank" rel="noopener">I-REACCH project</a> &middot; WS5: Evaluation, Impact and Best Practice &middot; University of Leicester</span>
+      <a href="https://ireacch.le.ac.uk/" target="_blank" rel="noopener">Main website &nearr;</a>
+    </div>
+  </footer>
+
+  <script src="ws5-logger.js"></script>
+  <script src="script.js"></script>
+  <script>
+    window.WS5Logger?.logPageView('3.0');
+    let bestPracticeSearchLogged = false;
+
+    /* ---------- Seed data (unchanged) ---------- */
+    const seedData = [
+      { id:"p1", title:"Transparent workload board",
+        school:"College of Social Sciences, Arts & Humanities",
+        desc:"Team-visible board mapping roles and time allocations; updated monthly.",
+        tags:["transparency","workload"],
+        evidence:"established",
+        votes:{ active:4, considering:1, mixed:0, na:0 },
+        created: Date.now()-86400000*14 },
+      { id:"p2", title:"Mentoring circles for new PGRs",
+        school:"Doctoral College / PGR",
+        desc:"Monthly peer circles with a rotating facilitator to share challenges and signpost support.",
+        tags:["mentoring","onboarding","community"],
+        evidence:"emerging",
+        votes:{ active:0, considering:0, mixed:0, na:0 },
+        created: Date.now()-86400000*3 }
+    ];
+
+    /* ---------- Tag constants ---------- */
+    const BP_PREDEFINED_TAGS = [
+      'mentoring','onboarding','community','transparency',
+      'workload','training','inclusion','career support','recognition'
+    ];
+    const MAX_CHIP_TAGS = 3;  /* max predefined chips selectable */
+
+    /* ---------- Storage keys (unchanged) ---------- */
+    const LS_VOTE   = id => `bp-vote2-${id}`;
+    const LS_TALLY  = 'bp-tallies2';
+    const LS_REASON = id => `bp-reason-${id}`;
+    const LS_DRAFT  = 'bp-draft';
+
+    const getTallies = () => JSON.parse(localStorage.getItem(LS_TALLY) || '{}');
+    const setTallies = obj => localStorage.setItem(LS_TALLY, JSON.stringify(obj));
+
+    function hydrate(data){
+      const tallies = getTallies();
+      return data.map(p => {
+        const t = tallies[p.id];
+        return t ? {...p, votes:{...p.votes,...t}} : p;
+      });
+    }
+
+    let state = {
+      data: hydrate(seedData),
+      query:"", school:"", sort:"active", tags: new Set()
+    };
+
+    /* ---------- DOM refs ---------- */
+    const cardsEl      = document.getElementById("cards");
+    const emptyEl      = document.getElementById("empty");
+    const qEl          = document.getElementById("q");
+    const schoolEl_f   = document.getElementById("filter-school");
+    const sortEl       = document.getElementById("sort");
+    const countEl      = document.getElementById("result-count");
+    const pillsEl      = document.getElementById("active-pills");
+
+    const titleEl        = document.getElementById("bp-title");
+    const schoolEl       = document.getElementById("bp-school");        /* now a <select> */
+    const schoolOtherEl  = document.getElementById("bp-school-other");  /* fallback text input */
+    const descEl         = document.getElementById("bp-desc");
+    const customTagInput = document.getElementById("bp-custom-tag");
+    const addBtn         = document.getElementById("bp-add");
+    const clearBtn       = document.getElementById("bp-clear");
+    const draftStatus    = document.getElementById("draft-status");
+    const cTitleEl       = document.getElementById("c-title");
+    const cDescEl        = document.getElementById("c-desc");
+    const evPillsEl      = document.getElementById("ev-pills");
+    const submitPanel    = document.getElementById("submitPanel");
+    const toggleBtn      = document.getElementById("toggleSubmit");
+    const feedbackEl     = document.getElementById("bp-feedback");
+    const formErrorsEl   = document.getElementById("bp-form-errors");
+    const desktopSubmit  = window.matchMedia('(min-width: 901px)');
+
+    /* ---------- Page guidance — open on first visit, closed thereafter ---------- */
+    (function(){
+      const guide = document.getElementById('bp-guide');
+      if(!guide) return;
+      if(!localStorage.getItem('bp-guide-seen')){
+        guide.setAttribute('open','');
+        /* Mark as seen after a short delay so the flag survives to the next visit */
+        setTimeout(()=> localStorage.setItem('bp-guide-seen','1'), 200);
+      }
+    })();
+
+    /* ---------- Submit panel disclosure ---------- */
+    function setSubmitOpen(open, focusTitle=false){
+      submitPanel.classList.toggle('open', open);
+      toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      submitPanel.setAttribute('aria-hidden', open ? 'false' : 'true');
+      toggleBtn.textContent = open ? '✕ Close form' : '+ Share a practice';
+      if(open && focusTitle) setTimeout(()=>titleEl.focus(), 350);
+    }
+
+    function syncSubmitDisclosure(){
+      setSubmitOpen(desktopSubmit.matches, false);
+    }
+
+    syncSubmitDisclosure();
+    desktopSubmit.addEventListener('change', syncSubmitDisclosure);
+
+    toggleBtn.addEventListener('click', ()=>{
+      const open = !submitPanel.classList.contains('open');
+      setSubmitOpen(open, open);
+      if(open) window.WS5Logger?.log('3.5', undefined, { control:'share-practice-panel' });
+    });
+
+    /* ---------- School dropdown — show/hide "Other" text input ---------- */
+    schoolEl.addEventListener('change', ()=>{
+      const isOther = schoolEl.value === 'other';
+      schoolOtherEl.style.display = isOther ? '' : 'none';
+      if(isOther) schoolOtherEl.focus();
+      if(!isOther){
+        schoolOtherEl.removeAttribute('aria-invalid');
+        document.getElementById('bp-school-other-error').hidden = true;
+      }
+      saveDraft();
+    });
+
+    /* ---------- Evidence level selector (unchanged) ---------- */
+    let selectedEvidence = '';
+
+    evPillsEl.addEventListener('click', e=>{
+      const btn = e.target.closest('.ev-btn');
+      if(!btn) return;
+      const val = btn.dataset.ev;
+      if(selectedEvidence === val){
+        selectedEvidence = '';
+        evPillsEl.querySelectorAll('.ev-btn').forEach(b=>{ b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+      } else {
+        selectedEvidence = val;
+        evPillsEl.querySelectorAll('.ev-btn').forEach(b=>{
+          const active = b.dataset.ev === val;
+          b.classList.toggle('active', active);
+          b.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+      }
+      window.WS5Logger?.log('3.2', undefined, { filterCategory:'evidence-level' });
+    });
+
+    function resetEvidence(){
+      selectedEvidence = '';
+      evPillsEl.querySelectorAll('.ev-btn').forEach(b=>{ b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+    }
+
+    /* ---------- Tag chip-toggle system ---------- */
+    let selectedChips = new Set();
+
+    function renderTagPills(){
+      const pEl = document.getElementById('bp-selected-tags');
+      pEl.innerHTML = '';
+      selectedChips.forEach(tag =>{
+        const pill = document.createElement('span');
+        pill.className = 'bp-tag-pill-item';
+
+        const label = document.createElement('span');
+        label.textContent = tag;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.textContent = '×';
+        removeBtn.setAttribute('aria-label', 'Remove tag: ' + tag);
+        removeBtn.addEventListener('click', ()=>{
+          selectedChips.delete(tag);
+          updateTagChips();
+          saveDraft();
+        });
+
+        pill.append(label, removeBtn);
+        pEl.appendChild(pill);
+      });
+    }
+
+    function updateTagChips(){
+      const atLimit = selectedChips.size >= MAX_CHIP_TAGS;
+      document.querySelectorAll('.bp-tag-chip-btn').forEach(b=>{
+        const tag = b.dataset.tag;
+        const on  = selectedChips.has(tag);
+        b.classList.toggle('selected', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.style.opacity = (!on && atLimit) ? '0.45' : '';
+      });
+      renderTagPills();
+    }
+
+    document.getElementById('bp-tag-chips').addEventListener('click', e=>{
+      const btn = e.target.closest('.bp-tag-chip-btn');
+      if(!btn) return;
+      const tag = btn.dataset.tag;
+      if(selectedChips.has(tag)){
+        selectedChips.delete(tag);
+      } else {
+        if(selectedChips.size < MAX_CHIP_TAGS) selectedChips.add(tag);
+      }
+      updateTagChips();
+      saveDraft();
+      window.WS5Logger?.log('3.2', undefined, { filterCategory:'contribution-tag' });
+    });
+
+    /* ---------- Helpers (unchanged) ---------- */
+    const uid  = () => "p" + Math.random().toString(36).slice(2,9);
+    const norm = s  => (s||"").toLowerCase();
+    const esc  = s  => (s||"").replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+    const EV_LABELS = { emerging:'Emerging', established:'Established', evidenced:'Evidence-based' };
+    const VOTE_OPTS = [
+      { key:'active',      label:'We do this',     cls:'opt-active'   },
+      { key:'considering', label:'Considering it',  cls:'opt-consider' },
+      { key:'mixed',       label:'Mixed results',   cls:'opt-mixed'    },
+      { key:'na',          label:'Not applicable',  cls:'opt-na'       },
+    ];
+
+    /* ---------- Filtering & sorting (unchanged) ---------- */
+    function filtered(){
+      const q = norm(state.query), s = norm(state.school);
+      let items = state.data.filter(p=>{
+        const text = `${p.title} ${p.desc} ${p.school} ${(p.tags||[]).join(" ")}`.toLowerCase();
+        const tagOk = state.tags.size ? (p.tags||[]).some(t=>state.tags.has(norm(t))) : true;
+        return (!q || text.includes(q)) && (!s || norm(p.school).includes(s)) && tagOk;
+      });
+      if(state.sort==='active')      items.sort((a,b)=>(b.votes.active||0)-(a.votes.active||0));
+      else if(state.sort==='newest') items.sort((a,b)=>(b.created||0)-(a.created||0));
+      else                           items.sort((a,b)=>a.title.localeCompare(b.title));
+      return items;
+    }
+
+    function renderPills(){
+      const pills = [];
+      if(state.query)  pills.push({label:`"${state.query}"`,        clear:()=>{ state.query="";  qEl.value=""; }});
+      if(state.school) pills.push({label:`School: ${state.school}`, clear:()=>{ state.school=""; schoolEl_f.value=""; }});
+      [...state.tags].forEach(tag=>pills.push({label:`Tag: ${tag}`, clear:()=>state.tags.delete(tag)}));
+
+      pillsEl.innerHTML='';
+      if(!pills.length){ pillsEl.style.display='none'; return; }
+      pillsEl.style.display='flex';
+      pills.forEach(p=>{
+        const el=document.createElement('span');
+        el.className='bp-pill';
+        el.innerHTML=`${esc(p.label)} <button type="button" aria-label="Remove filter">✕</button>`;
+        el.querySelector('button').onclick=()=>{ p.clear(); render(); };
+        pillsEl.appendChild(el);
+      });
+    }
+
+    /* ---------- Render (unchanged) ---------- */
+    function render(){
+      const items = filtered();
+      cardsEl.innerHTML='';
+      emptyEl.style.display = items.length ? 'none' : 'block';
+      countEl.textContent   = `${items.length} ${items.length===1?'result':'results'}`;
+      renderPills();
+
+      items.forEach(p=>{
+        const userVote = localStorage.getItem(LS_VOTE(p.id)) || '';
+
+        const card = document.createElement('div');
+        card.className='bp-card';
+        card.id = p.id;
+
+        const evBadge = (p.evidence && EV_LABELS[p.evidence])
+          ? `<span class="ev-badge ${esc(p.evidence)}">${EV_LABELS[p.evidence]}</span>` : '';
+        const previewBadge = p.preview ? '<span class="bp-example-badge">Preview only · not submitted</span>' : '';
+
+        card.innerHTML=`
+          <h3>${esc(p.title)}</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <span class="bp-badge">${esc(p.school)}</span>${evBadge}${previewBadge}
+          </div>
+          <p class="bp-sub">${esc(p.desc)}</p>
+          ${p.tags?.length ? `<div class="bp-tags">${p.tags.map(t=>`<button type="button" class="bp-tag-btn" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}</div>` : ''}
+          <div class="bp-sep"></div>
+        `;
+
+        /* Four-option structured vote */
+        const voteGroup = document.createElement('div');
+        voteGroup.className='bp-vote-group';
+
+        const vLabel = document.createElement('div');
+        vLabel.className='bp-vote-label';
+        vLabel.textContent='Has your school tried anything like this?';
+        voteGroup.appendChild(vLabel);
+
+        const vOpts = document.createElement('div');
+        vOpts.className='bp-vote-opts';
+        vOpts.setAttribute('role','group');
+        vOpts.setAttribute('aria-label','Vote on this practice');
+
+        const countEl_card = document.createElement('div');
+        countEl_card.className='bp-vote-count';
+        countEl_card.textContent=voteCountText(p.votes);
+
+        const vBtns = {};
+        VOTE_OPTS.forEach(opt=>{
+          const b = document.createElement('button');
+          b.type='button';
+          b.textContent=opt.label;
+          const isActive = userVote===opt.key;
+          b.className=`bp-vote-btn ${opt.cls}${isActive?' v-active':''}`;
+          b.dataset.vote=opt.key;
+          b.setAttribute('aria-pressed', isActive?'true':'false');
+          b.onclick=()=>onVote(p, opt.key, vBtns, countEl_card, reasonWrap);
+          vBtns[opt.key]=b;
+          vOpts.appendChild(b);
+        });
+
+        voteGroup.appendChild(vOpts);
+        voteGroup.appendChild(countEl_card);
+        const localNote = document.createElement('p');
+        localNote.className = 'bp-local-note';
+        localNote.textContent = 'Your choice and any tally change are stored only in this browser.';
+        voteGroup.appendChild(localNote);
+        card.appendChild(voteGroup);
+
+        /* Reason textarea (mixed / na) */
+        const reasonWrap = document.createElement('div');
+        reasonWrap.className='bp-reason-wrap';
+        const showReason = userVote==='mixed' || userVote==='na';
+        reasonWrap.classList.toggle('bp-reason-visible', showReason);
+        reasonWrap.innerHTML=`
+          <label class="bp-hint" for="r-${esc(p.id)}">Tell us more <i>(optional)</i></label>
+          <textarea id="r-${esc(p.id)}" class="bp-textarea" style="min-height:70px"
+            placeholder="e.g., We tried this but lacked time / resources…"></textarea>
+          <p class="bp-help">Context helps others understand when this works and when it doesn't.</p>
+        `;
+        const reasonTa = reasonWrap.querySelector('textarea');
+        reasonTa.value = localStorage.getItem(LS_REASON(p.id))||'';
+        reasonTa.addEventListener('input',()=>localStorage.setItem(LS_REASON(p.id),reasonTa.value));
+        card.appendChild(reasonWrap);
+
+        /* Tag filter on click */
+        card.querySelectorAll('.bp-tag-btn').forEach(tb=>{
+          tb.addEventListener('click',()=>{
+            state.tags.add(norm(tb.dataset.tag));
+            render();
+            window.WS5Logger?.log('3.2', undefined, { filterCategory:'practice-tag' });
+          });
+        });
+
+        /* onVote */
+        function onVote(pObj, choice, btns, countDisplay, rWrap){
+          const prev = localStorage.getItem(LS_VOTE(pObj.id));
+          if(prev===choice) return;
+
+          Object.entries(btns).forEach(([k,b])=>{
+            b.classList.remove('v-active');
+            b.setAttribute('aria-pressed','false');
+          });
+          btns[choice].classList.add('v-active');
+          btns[choice].setAttribute('aria-pressed','true');
+
+          const tallies = getTallies();
+          const t = tallies[pObj.id] || {...pObj.votes};
+          if(prev && t[prev]!=null) t[prev]=Math.max(0,t[prev]-1);
+          t[choice]=(t[choice]||0)+1;
+          tallies[pObj.id]=t;
+          setTallies(tallies);
+          localStorage.setItem(LS_VOTE(pObj.id),choice);
+          window.WS5Logger?.log('3.4', undefined, { cardId:pObj.id, voteType:choice });
+
+          pObj.votes=t;
+          countDisplay.textContent=voteCountText(t);
+          rWrap.classList.toggle('bp-reason-visible', choice==='mixed'||choice==='na');
+
+          state.data=hydrate(state.data);
+          render();
+          requestAnimationFrame(()=>{
+            document.getElementById(pObj.id)?.querySelector(`.bp-vote-btn[data-vote="${choice}"]`)?.focus();
+          });
+        }
+
+        cardsEl.appendChild(card);
+      });
+    }
+
+    function voteCountText(v){
+      const parts=[];
+      if(v.active)      parts.push(`${v.active} doing this`);
+      if(v.considering) parts.push(`${v.considering} considering`);
+      if(v.mixed)       parts.push(`${v.mixed} mixed results`);
+      if(v.na)          parts.push(`${v.na} not applicable`);
+      return parts.length ? parts.join(' · ') : 'No responses yet';
+    }
+
+    /* ---------- Browse events (unchanged) ---------- */
+    qEl.addEventListener('input',        e=>{
+      state.query=e.target.value; render();
+      if(state.query.trim() && !bestPracticeSearchLogged){
+        bestPracticeSearchLogged = true;
+        window.WS5Logger?.log('3.1', undefined, { control:'search-field' });
+      }
+      if(!state.query.trim()) bestPracticeSearchLogged = false;
+    });
+    schoolEl_f.addEventListener('change', e=>{
+      state.school=e.target.value; render();
+      window.WS5Logger?.log('3.2', undefined, { filterCategory:'school' });
+    });
+    sortEl.addEventListener('change',    e=>{
+      state.sort=e.target.value; render();
+      window.WS5Logger?.log('3.2', undefined, { filterCategory:'sort' });
+    });
+    document.getElementById('clear-filters').addEventListener('click',()=>{
+      state.query=''; qEl.value='';
+      state.school=''; schoolEl_f.value='';
+      state.tags.clear();
+      render();
+      window.WS5Logger?.log('3.2', undefined, { control:'clear-filters' });
+    });
+
+    /* ---------- Character counters (unchanged) ---------- */
+    function updateCounters(){
+      cTitleEl.textContent=`${titleEl.value.length}/80`;
+      cDescEl.textContent=`${descEl.value.length}/800`;
+    }
+    [titleEl,descEl].forEach(el=>el.addEventListener('input',updateCounters));
+    updateCounters();
+
+    /* ---------- Draft save / restore (updated for new fields) ---------- */
+    function saveDraft(){
+      localStorage.setItem(LS_DRAFT, JSON.stringify({
+        title:       titleEl.value,
+        school:      schoolEl.value,
+        schoolOther: schoolOtherEl.value,
+        desc:        descEl.value,
+        selectedChips: [...selectedChips],
+        customTag:   customTagInput.value,
+        evidence:    selectedEvidence
+      }));
+      draftStatus.style.display='inline';
+      clearTimeout(saveDraft._t);
+      saveDraft._t=setTimeout(()=>draftStatus.style.display='none', 1200);
+    }
+
+    [titleEl, descEl, customTagInput, schoolOtherEl].forEach(el=>el.addEventListener('input', saveDraft));
+    /* select fires 'change', not 'input' */
+    /* school dropdown change is already wired above and calls saveDraft() */
+
+    /* Restore draft */
+    (()=>{ try{
+      const d=JSON.parse(localStorage.getItem(LS_DRAFT)||'null');
+      if(!d) return;
+
+      titleEl.value = d.title || '';
+      descEl.value  = d.desc  || '';
+
+      /* Restore school select */
+      if(d.school){
+        const hasOpt = Array.from(schoolEl.options).some(o=>o.value===d.school);
+        if(hasOpt){
+          schoolEl.value = d.school;
+          if(d.school === 'other'){
+            schoolOtherEl.style.display = '';
+            schoolOtherEl.value = d.schoolOther || '';
+          }
+        }
+      }
+
+      /* Restore chip selections */
+      if(Array.isArray(d.selectedChips)){
+        d.selectedChips.forEach(t=>{
+          if(BP_PREDEFINED_TAGS.includes(t) && selectedChips.size < MAX_CHIP_TAGS) selectedChips.add(t);
+        });
+        updateTagChips();
+      }
+
+      /* Restore custom tag */
+      if(d.customTag) customTagInput.value = d.customTag;
+
+      /* Restore evidence */
+      if(d.evidence){
+        selectedEvidence = d.evidence;
+        evPillsEl.querySelectorAll('.ev-btn').forEach(b=>{
+          const on = b.dataset.ev===d.evidence;
+          b.classList.toggle('active', on);
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+      }
+
+      updateCounters();
+    }catch{} })();
+
+    function setFieldError(control, errorId, invalid){
+      const error = document.getElementById(errorId);
+      error.hidden = !invalid;
+      if(invalid) control.setAttribute('aria-invalid','true');
+      else control.removeAttribute('aria-invalid');
+    }
+
+    function clearFormValidation(){
+      formErrorsEl.hidden = true;
+      setFieldError(titleEl, 'bp-title-error', false);
+      setFieldError(schoolEl, 'bp-school-error', false);
+      setFieldError(schoolOtherEl, 'bp-school-other-error', false);
+      setFieldError(descEl, 'bp-desc-error', false);
+    }
+
+    function validateContribution(){
+      clearFormValidation();
+      const checks = [
+        [titleEl, 'bp-title-error', !titleEl.value.trim()],
+        [schoolEl, 'bp-school-error', !schoolEl.value],
+        [schoolOtherEl, 'bp-school-other-error', schoolEl.value === 'other' && !schoolOtherEl.value.trim()],
+        [descEl, 'bp-desc-error', !descEl.value.trim()]
+      ];
+      const firstInvalid = checks.find(([, , invalid])=>invalid);
+      checks.forEach(([control,errorId,invalid])=>setFieldError(control,errorId,invalid));
+      formErrorsEl.hidden = !firstInvalid;
+      if(firstInvalid) firstInvalid[0].focus();
+      return !firstInvalid;
+    }
+
+    [[titleEl,'bp-title-error'],[schoolEl,'bp-school-error'],[schoolOtherEl,'bp-school-other-error'],[descEl,'bp-desc-error']].forEach(([control,errorId])=>{
+      control.addEventListener(control.tagName === 'SELECT' ? 'change' : 'input', ()=>{
+        if(control.value.trim()){
+          control.removeAttribute('aria-invalid');
+          document.getElementById(errorId).hidden = true;
+          if(!document.querySelector('.bp-field-error:not([hidden])')) formErrorsEl.hidden = true;
+        }
+      });
+    });
+
+    /* ---------- Add practice ---------- */
+    addBtn.addEventListener('click',()=>{
+      if(!validateContribution()) return;
+      const title    = titleEl.value.trim();
+      const schoolVal= schoolEl.value;
+      const school   = schoolVal === 'other' ? schoolOtherEl.value.trim() : schoolVal;
+      const desc     = descEl.value.trim();
+
+      const customTag = customTagInput.value.trim().toLowerCase().slice(0,40);
+      const tags = [...selectedChips, ...(customTag ? [customTag] : [])];
+
+      const item={
+        id:uid(), title, school, desc, tags,
+        evidence:selectedEvidence||'emerging',
+        votes:{active:0,considering:0,mixed:0,na:0},
+        created:Date.now(),
+        preview:true
+      };
+
+      state.data.unshift(item);
+
+      /* Clear form */
+      titleEl.value        = '';
+      schoolEl.value       = '';
+      schoolOtherEl.value  = '';
+      schoolOtherEl.style.display = 'none';
+      descEl.value         = '';
+      customTagInput.value = '';
+      selectedChips.clear();
+      updateTagChips();
+      resetEvidence();
+      localStorage.removeItem(LS_DRAFT);
+      updateCounters();
+      draftStatus.style.display='none';
+      clearFormValidation();
+
+      /* Keep the desktop form visible; collapse it after a mobile preview. */
+      setSubmitOpen(desktopSubmit.matches, false);
+
+      render();
+      feedbackEl.textContent = '✓ Added to this page for preview — not submitted';
+      feedbackEl.hidden = false;
+      window.WS5Logger?.log('3.6', undefined, { control:'add-practice' });
+      requestAnimationFrame(()=>document.getElementById(item.id)?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',block:'start'}));
+    });
+
+    /* ---------- Clear form ---------- */
+    clearBtn.addEventListener('click',()=>{
+      titleEl.value        = '';
+      schoolEl.value       = '';
+      schoolOtherEl.value  = '';
+      schoolOtherEl.style.display = 'none';
+      descEl.value         = '';
+      customTagInput.value = '';
+      selectedChips.clear();
+      updateTagChips();
+      resetEvidence();
+      localStorage.removeItem(LS_DRAFT);
+      updateCounters();
+      clearFormValidation();
+      feedbackEl.hidden = true;
+      titleEl.focus();
+    });
+
+    /* ---------- Boot ---------- */
+    render();
+  </script>
+</body>
+</html>

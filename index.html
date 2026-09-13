@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WS5 Evaluation Toolkit | I-REACCH</title>
+
+  <link rel="stylesheet" href="assets/css/brand.css">
+  <link rel="stylesheet" href="assets/css/header.css">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* Entry page — minimal, app-launcher style */
+    .entry-bar{
+      background:var(--ire-hero);
+      border-bottom:1px solid #c3d6d9;
+      padding:28px 0 24px;
+    }
+    .entry-bar__inner{
+      max-width:var(--page-max);
+      margin:0 auto;
+      padding:0 24px;
+    }
+    .entry-bar__label{
+      font-size:.78rem;font-weight:700;letter-spacing:.08em;
+      text-transform:uppercase;color:#2f6878;margin-bottom:6px;
+    }
+    .entry-bar__title{
+      font-size:clamp(1.9rem,4vw,2.6rem);
+      font-weight:800;color:#1b2a41;margin:0;line-height:1.25;
+    }
+    .entry-bar__sub{
+      margin-top:6px;font-size:.95rem;color:#556070;
+    }
+    .tools-grid{
+      max-width:var(--page-max);
+      margin:32px auto 0;
+      padding:0 24px 48px;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:20px;
+    }
+    @media(max-width:1060px){ .tools-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media(max-width:640px){ .tools-grid{ grid-template-columns:1fr; } }
+
+    .tool-card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      box-shadow:0 8px 24px rgba(28,39,51,.05);
+      padding:28px 24px 24px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .tool-card__icon{
+      font-size:1.6rem;
+      line-height:1;
+      margin-bottom:4px;
+    }
+    .tool-card__name{
+      font-size:1.1rem;font-weight:800;color:#1b2a41;margin:0;
+    }
+    .tool-card__desc{
+      font-size:.92rem;color:#556070;line-height:1.55;flex:1;margin:0;
+    }
+    .tool-card__link{
+      display:inline-block;margin-top:6px;
+      background:linear-gradient(135deg,var(--grad-a),var(--grad-b));
+      color:#fff;border-radius:999px;padding:9px 18px;
+      font-weight:700;font-size:.88rem;text-decoration:none;
+      align-self:flex-start;
+    }
+    .tool-card__link:hover{ opacity:.9;text-decoration:none; }
+  </style>
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<!-- Shared navigation header -->
+<header class="site-header">
+  <div class="container bar">
+    <a class="logo" href="index.html">
+      <img src="assets/img/ireacch-logo.png" alt="I-REACCH" />
+    </a>
+    <nav id="primary-nav" class="nav" aria-label="Primary">
+      <a href="index.html" aria-current="page">Toolkit home</a>
+      <a href="micro-surveys.html">Micro-surveys</a>
+      <a href="reflection.html">Reflection Space</a>
+      <a href="best-practices.html">Best Practices</a>
+      <a href="dashboard.html">Dashboard</a>
+    </nav>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation">
+      <svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true">
+        <rect y="0"  width="22" height="2" rx="1" fill="currentColor"/>
+        <rect y="7"  width="22" height="2" rx="1" fill="currentColor"/>
+        <rect y="14" width="22" height="2" rx="1" fill="currentColor"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- Minimal page intro -->
+<div class="entry-bar">
+  <div class="entry-bar__inner">
+    <div class="entry-bar__label">WS5 · Evaluation, Impact and Best Practice</div>
+    <h1 class="entry-bar__title">Evaluation Toolkit</h1>
+    <p class="entry-bar__sub">Select a tool below to contribute to the I-REACCH evaluation study. All responses are anonymous — no names or emails are stored.</p>
+  </div>
+</div>
+
+<!-- Four toolkit cards -->
+<main id="main-content" tabindex="-1">
+  <div class="tools-grid">
+
+    <div class="tool-card">
+      <div class="tool-card__icon" aria-hidden="true">📋</div>
+      <h2 class="tool-card__name">Micro-surveys</h2>
+      <p class="tool-card__desc">Answer short, one-question surveys about your experience of research culture.</p>
+      <a class="tool-card__link" href="micro-surveys.html">Open Micro-surveys</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-card__icon" aria-hidden="true">✏️</div>
+      <h2 class="tool-card__name">Reflection Space</h2>
+      <p class="tool-card__desc">Add a structured written reflection to explain the experiences behind your answers.</p>
+      <a class="tool-card__link" href="reflection.html">Start a reflection</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-card__icon" aria-hidden="true">💡</div>
+      <h2 class="tool-card__name">Best Practices</h2>
+      <p class="tool-card__desc">Browse practices from Schools and Colleges, or share an approach used locally.</p>
+      <a class="tool-card__link" href="best-practices.html">Browse Best Practices</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-card__icon" aria-hidden="true">&#128202;</div>
+      <h2 class="tool-card__name">Dashboard</h2>
+      <p class="tool-card__desc">View aggregated survey results, written themes and suggested follow-up actions.</p>
+      <a class="tool-card__link" href="dashboard.html">View Dashboard</a>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Part of the <a href="https://ireacch.le.ac.uk/" target="_blank" rel="noopener">I-REACCH project</a> &middot; WS5: Evaluation, Impact and Best Practice &middot; University of Leicester</span>
+    <a href="https://ireacch.le.ac.uk/" target="_blank" rel="noopener">Main website &nearr;</a>
+  </div>
+</footer>
+
+<script src="ws5-logger.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

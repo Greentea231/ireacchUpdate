@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Micro-surveys | I-REACCH</title>
+
+  <!-- Your site styles (keep) -->
+  <link rel="stylesheet" href="assets/css/brand.css">
+  <link rel="stylesheet" href="assets/css/header.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    :root{
+      --accent:   #4a6cf7;
+      --accent-2: #9b51e0;
+      --bg-soft:  #f5f8ff;
+      --border:   #e9eef6;
+      --text:     #1b2a41;
+      --muted:    #66788a;
+      --pill-bg:  #eef4ff;
+      --pill-tx:  #2f5d98;
+      --done-bg:  #e7f8ec;
+      --done-tx:  #1f7a41;
+      --red-pill: #ff6b6b;
+    }
+
+    .page{ max-width:var(--page-max); margin:18px auto 48px; padding:0 24px; }
+
+    /* INTRO */
+    .intro-card{ background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 6px 18px rgba(28,39,51,.06); overflow:hidden; margin-bottom:20px; }
+    .intro-grid{ display:grid; grid-template-columns:minmax(0,1fr) 270px; gap:0; align-items:center; padding:16px 0 16px 20px; }
+    .intro-copy{ min-width:0; }
+    .intro-figure{ min-width:0; margin:0; display:flex; align-items:center; justify-content:flex-end; }
+    .intro-figure img{ display:block; width:270px; max-width:100%; height:auto; object-fit:contain; border-radius:10px; }
+    .intro-card h2{ margin:0 0 8px; font-size:1.15rem; color:var(--text); }
+    .intro-card p{ margin:.35rem 0; color:var(--text); }
+    /* MAIN LAYOUT */
+    .runner{ display:grid; grid-template-columns:minmax(300px,31.5%) minmax(0,1fr); gap:20px; }
+    @media (max-width:980px){ .runner{ grid-template-columns:1fr; } }
+
+    .panel{ min-width:0; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 6px 18px rgba(28,39,51,.06); overflow:hidden; }
+    .panel .hd{ padding:14px 16px; border-bottom:1px solid var(--border); }
+    .panel .bd{ padding:14px 16px; }
+
+    /* LEFT LIST */
+    .survey-list-panel{ display:grid; grid-template-rows:auto minmax(0,1fr); height:clamp(700px,calc(100vh - 72px),880px); }
+    .survey-list-panel .hd{ padding:16px; }
+    .survey-list-panel .bd{ padding:4px 10px 12px; }
+    .survey-list-scroll{ min-height:0; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; scrollbar-gutter:stable; scrollbar-width:thin; scrollbar-color:#b8c3ce transparent; }
+    .survey-list-scroll::-webkit-scrollbar{ width:8px; }
+    .survey-list-scroll::-webkit-scrollbar-track{ background:transparent; }
+    .survey-list-scroll::-webkit-scrollbar-thumb{ background:#b8c3ce; background-clip:content-box; border:2px solid transparent; border-radius:999px; }
+    .survey-list-scroll::-webkit-scrollbar-thumb:hover{ background:#9eacba; background-clip:content-box; }
+    .survey-list-scroll:focus-visible{ outline:3px solid #5b2ca1; outline-offset:-4px; }
+    .side-heading{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+    .side-title{ margin:0; font-size:18px; font-weight:800; color:var(--text); }
+    .progress-text{ margin:0; color:#41566c; font-size:.88rem; line-height:1.3; font-weight:750; white-space:nowrap; }
+    .filters{ box-sizing:border-box; display:grid; grid-template-columns:.65fr 1.55fr 1.2fr; gap:0; width:100%; max-width:100%; margin:0; padding:0; overflow:hidden; background:#f2f5f9; border:1px solid #cfd9e8; border-radius:10px; }
+    .filters button{ min-width:0; min-height:44px; padding:8px; border:0; border-radius:0; font:inherit; font-weight:700; font-size:14px; line-height:1; white-space:nowrap; color:#506477; background:transparent; cursor:pointer; transition:background .18s ease,color .18s ease; }
+    .filters button+button{ border-left:1px solid #d5deea; }
+    .filters button:hover{ color:#2f4e8d; background:#e9eef5; }
+    .filters button[aria-pressed="true"]{ color:#244fc7; background:#dfe8fb; }
+    .filters button:focus-visible{ position:relative; z-index:1; outline:0; box-shadow:inset 0 0 0 3px #5b2ca1; }
+    .btn:focus-visible{ outline:3px solid #5b2ca1; outline-offset:2px; }
+
+    .list{ display:flex; flex-direction:column; gap:0; }
+    .item{ box-sizing:border-box; width:100%; display:grid; grid-template-columns:minmax(0,1fr); gap:0; padding:15px 12px 16px 14px; border:0; border-bottom:1px solid #e4eaf1; border-radius:0; background:transparent; cursor:pointer; font:inherit; text-align:left; transition:background .18s ease,box-shadow .18s ease; }
+    .item:last-child{ border-bottom:0; }
+    .item:hover{ background:#f5f8fc; }
+    .item.active{ box-shadow:inset 4px 0 0 var(--accent); background:#edf3ff; }
+    .item:focus-visible{ position:relative; z-index:1; outline:3px solid #5b2ca1; outline-offset:-3px; }
+    .item.active .title{ font-weight:800; }
+
+    .title{ font-weight:700; color:var(--text); font-size:16px; line-height:1.28; }
+    .meta{ font-size:.89rem; line-height:1.45; color:#596c7e; margin-top:3px; }
+    .left{ min-width:0; display:flex; flex-direction:column; }
+    .item-status{ margin-top:6px; line-height:1.35; }
+    .survey-state{ display:inline-flex; align-items:center; white-space:nowrap; font-size:.85rem; line-height:1.35; font-weight:600; color:#66717d; }
+    .survey-state.done{ color:#526b5a; }
+    .survey-state.not-completed{ color:#6d6268; }
+    .visually-hidden{ position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+
+    .pill{ display:inline-flex; align-items:center; flex:0 0 auto; white-space:nowrap; word-break:normal; overflow-wrap:normal; font-size:.78rem; line-height:1.2; font-weight:700; padding:5px 10px; border-radius:999px; background:var(--pill-bg); color:var(--pill-tx); border:1px solid var(--border); }
+    .pill.done{ background:var(--done-bg); color:var(--done-tx); }
+    .pill.not-completed{ background:#fff1f1; color:#a61d24; border-color:#e6a5a8; }
+
+    /* RIGHT PANEL */
+    .head-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .head-row>div:first-child{ min-width:0; flex:1 1 auto; }
+    .status{ flex:0 0 auto; }
+    .h2{ margin:0; color:var(--text); font-size:18px; font-weight:800; }
+    .muted{ color:#53677a; font-size:.9rem; line-height:1.5; }
+    iframe{ box-sizing:border-box; display:block; width:100%; height:600px; border:1px solid #e4eaf2; border-radius:12px; background:#fff; }
+    #surveyPanel .hd{ transition:background-color .35s ease; }
+    #surveyPanel.content-updated .hd{ background:#eef4ff; }
+
+    .controls{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; align-items:center; }
+    .btn{ box-sizing:border-box; appearance:none; min-height:44px; border:0; border-radius:999px; padding:10px 16px; font-weight:800; color:#fff; background:linear-gradient(135deg,var(--accent-2),var(--accent)); cursor:pointer; }
+    .btn[disabled]{ opacity:.45; cursor:not-allowed; }
+    .btn.secondary{ color:var(--accent); background:#fff; border:1px solid var(--accent); }
+
+    .complete-note{
+      flex:1 0 100%;
+      color:#53677a;
+      font-size:.9rem;
+      font-weight: 400;
+      line-height:1.5;
+      margin-top:1px;
+    }
+    .completion-feedback{ margin:14px 0 0; color:#1f7a41; font-size:.95rem; line-height:1.45; font-weight:800; }
+    .list-empty{ margin:0; color:var(--muted); font-size:.9rem; }
+
+    @media(max-width:800px){
+      .intro-grid{ grid-template-columns:1fr; gap:12px; }
+      .intro-figure{ justify-content:center; }
+      .intro-figure img{ width:225px; }
+    }
+
+    @media(max-width:980px){
+      .survey-list-panel{ display:block; height:auto; }
+      .survey-list-scroll{ overflow:visible; scrollbar-gutter:auto; }
+    }
+
+    @media(max-width:640px){
+      .page{ padding:0 14px; margin-top:14px; }
+      .intro-card{ margin-bottom:14px; }
+      .intro-grid{ padding:14px 16px; }
+      .panel .bd,.panel .hd{ padding-inline:12px; }
+      iframe{ height:560px; }
+      .controls{ align-items:stretch; }
+      .controls .btn{ width:100%; min-height:44px; }
+      .head-row{ flex-wrap:wrap; }
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      .filters button,.item,#surveyPanel .hd{ transition:none; }
+    }
+
+    .admin{ margin-top:26px; border-top:1px dashed var(--border); padding-top:16px; }
+    .admin input{ width:100%; padding:10px; border:1px solid var(--border); border-radius:10px; margin:6px 0; }
+    .admin .grid{ display:grid; grid-template-columns:2fr 1fr; gap:10px; }
+    code.json-out{ display:block; white-space:pre-wrap; background:#0f172a; color:#e2e8f0; padding:10px; border-radius:10px; margin-top:10px; font-size:.85rem; }
+  </style>
+</head>
+<body>
+
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container bar">
+      <a class="logo" href="index.html" aria-label="I-REACCH Evaluation Toolkit home"><img src="assets/img/ireacch-logo.png" alt="I-REACCH"></a>
+      <nav id="primary-nav" class="nav" aria-label="Primary">
+        <a href="index.html">Toolkit home</a>
+        <a href="micro-surveys.html" aria-current="page">Micro-surveys</a>
+        <a href="reflection.html">Reflection Space</a>
+        <a href="best-practices.html">Best Practices</a>
+        <a href="dashboard.html">Dashboard</a>
+      </nav>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation">
+        <svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true"><rect y="0" width="22" height="2" rx="1"/><rect y="7" width="22" height="2" rx="1"/><rect y="14" width="22" height="2" rx="1"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Page title banner -->
+  <section class="overview-bar" aria-labelledby="page-title">
+    <div class="overview-inner">
+      <div class="brand-wrap">
+        <h1 class="page-title" id="page-title">Micro-surveys</h1>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <a class="back-link" href="index.html">&larr; Toolkit home</a>
+      </div>
+    </div>
+  </section>
+
+  <main class="page" id="main-content" tabindex="-1">
+    <!-- INTRO CARD -->
+    <section class="intro-card" aria-labelledby="intro-heading">
+      <div class="intro-grid">
+        <div class="intro-copy">
+          <h2 id="intro-heading">About these micro-surveys</h2>
+          <p>Each I-REACCH micro-survey has one question and takes less than a minute. Choose a micro-survey below, complete it in Microsoft Forms, then mark it completed in this browser.</p>
+          <p>They are open to all research staff, research-enabling staff and PGRs. You may be asked to log in with your University of Leicester email; the system won’t collect your name or email address. <a href="mailto:ireacch@leicester.ac.uk">Contact the I-REACCH team</a> if you would like more information before taking part.</p>
+          <p>By completing the survey, you confirm that you have read the information above and consent to take part in the study.</p>
+        </div>
+        <figure class="intro-figure">
+          <img src="assets/img/speak-up.png" alt="Speak Up for Research Culture campaign: I-REACCH Micro Survey, one question only">
+        </figure>
+      </div>
+    </section>
+
+    <!-- MAIN CONTENT: Survey list + Survey embed -->
+    <div class="runner">
+      <!-- LEFT: Survey list -->
+      <aside class="panel survey-list-panel" aria-labelledby="list-heading">
+        <div class="hd">
+          <div class="side-heading">
+            <h2 id="list-heading" class="side-title">Micro-surveys</h2>
+            <p class="progress-text" id="surveyProgress" role="status">0 of 0 completed</p>
+          </div>
+          <div class="filters" id="filters" role="group" aria-label="Filter micro-surveys">
+            <button type="button" data-filter="all" aria-pressed="true">All</button>
+            <button type="button" data-filter="unfinished" aria-pressed="false">Not completed</button>
+            <button type="button" data-filter="completed" aria-pressed="false">Completed</button>
+          </div>
+        </div>
+        <div class="bd survey-list-scroll" tabindex="0" role="region" aria-labelledby="list-heading" aria-describedby="surveyProgress"><div id="list" class="list"></div></div>
+      </aside>
+
+      <!-- RIGHT: Current survey -->
+      <section class="panel" id="surveyPanel" aria-labelledby="currTitle">
+        <div class="hd">
+          <div class="head-row">
+            <div>
+              <h2 class="h2" id="currTitle" tabindex="-1">Select a micro-survey</h2>
+              <div class="muted" id="currDate"></div>
+              <!-- NEW: short notice right under the title/date -->
+              <div class="muted" id="currNote" style="margin-top:6px; line-height:1.45;"></div>
+            </div>
+            <div class="status" aria-live="polite"><span id="currBadge" class="pill not-completed">&#9675; Not completed</span></div>
+          </div>
+        </div>
+        <div class="bd">
+          <iframe id="formFrame" title="Micro-survey question"></iframe>
+          <p class="completion-feedback" id="completionFeedback" role="status" aria-live="polite" hidden></p>
+          <div class="controls" id="completionControls">
+            <button id="btnComplete" class="btn">I submitted this micro-survey</button>
+            <button id="btnNext" class="btn secondary" type="button" hidden>Next incomplete micro-survey</button>
+            <span class="complete-note" id="completionGuidance">After submitting in Microsoft Forms, use this button to mark it completed in this browser.</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Admin helper (optional) -->
+    <section id="admin" class="admin" style="display:none">
+      <h2 style="margin:0 0 8px">Admin • add a survey (JSON helper)</h2>
+      <div class="grid">
+        <input id="aTitle" placeholder="Title e.g., I-REACCH micro-survey (Q1) Feel Valued"/>
+        <input id="aMinutes" placeholder="Minutes (e.g., 1)"/>
+      </div>
+      <div class="grid">
+        <input id="aAudience" placeholder="Audience (e.g., Staff/PGR)"/>
+        <input id="aSchool" placeholder="School/College (optional)"/>
+      </div>
+        <input id="aUrl" placeholder="Microsoft Forms embed URL"/>
+      <div class="controls">
+        <button id="aAdd" class="btn">Add to config (in memory)</button>
+        <button id="aExport" class="btn" style="background:var(--bg-soft);color:var(--text)">Export JSON</button>
+      </div>
+      <code id="aOut" class="json-out" style="display:none"></code>
+    </section>
+  </main>
+
+  <!-- JS -->
+  <script src="ws5-logger.js"></script>
+  <script src="script.js"></script>
+  <script>
+    window.WS5Logger?.logPageView('1.0');
+
+    /* -------------------- Load surveys + LIVE submission dates -------------------- */
+    let SURVEYS = [];
+    const LIVE = { updatedAt: null, surveys: {} }; // filled from data/submissions.json
+
+    async function loadSurveys(){
+      try{
+        const r = await fetch('surveys.json?cb=' + Date.now());
+        SURVEYS = await r.json();
+      }catch{ SURVEYS = []; }
+    }
+    async function loadLive(){
+      try{
+        const r = await fetch('data/submissions.json?cb=' + Date.now());
+        const j = await r.json();
+        LIVE.updatedAt = j.updatedAt || null;
+        LIVE.surveys   = j.surveys   || {};
+      }catch{ /* keep LIVE empty; page still works */ }
+    }
+
+    /* -------------------- Local completion status -------------------- */
+    const statusKey = id => `survey-status:${id}`;          // "not" | "done"
+    const whenKey   = id => `survey-completed-at:${id}`;    // ISO string
+
+    const getStatus = id => localStorage.getItem(statusKey(id)) || "not";
+    function setStatus(id, s){
+      localStorage.setItem(statusKey(id), s);
+      if(s === 'done') localStorage.setItem(whenKey(id), new Date().toISOString());
+      renderList(current?.id);
+      updateCurrentState();
+    }
+
+    /* -------------------- UI refs -------------------- */
+    const $list   = document.getElementById('list');
+    const $frame  = document.getElementById('formFrame');
+    const $title  = document.getElementById('currTitle');
+    const $date   = document.getElementById('currDate');
+    const $note   = document.getElementById('currNote');   // NEW
+    const $badge  = document.getElementById('currBadge');
+    const $btn    = document.getElementById('btnComplete');
+    const $next   = document.getElementById('btnNext');
+    const $feedback = document.getElementById('completionFeedback');
+    const $guidance = document.getElementById('completionGuidance');
+    const $controls = document.getElementById('completionControls');
+    const $progress = document.getElementById('surveyProgress');
+    const $panel  = document.getElementById('surveyPanel');
+    const $filters= document.getElementById('filters');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const stackedLayout = window.matchMedia('(max-width: 980px)');
+
+    let current = null, filter = "all";
+
+    /* Filters */
+    [...$filters.querySelectorAll('button')].forEach(button=>{
+      button.onclick = () => {
+        [...$filters.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed', x === button ? 'true' : 'false'));
+        filter = button.dataset.filter;
+        renderList(current?.id);
+        window.WS5Logger?.log('1.3', undefined, { control:'survey-filter', filterType:filter });
+      };
+    });
+
+    /* -------- Date formatting + smart date picking -------- */
+    const fmt = (any) => {
+      if (!any) return '';
+      const d = new Date(any);
+      if (!isNaN(d)) {
+        const dd = String(d.getDate()).padStart(2,'0');
+        const mm = String(d.getMonth()+1).padStart(2,'0');
+        const yy = d.getFullYear();
+        return `${dd}.${mm}.${yy}`;
+      }
+      return String(any);
+    };
+
+    function getDisplayDate(id, surveyObj){
+      const live   = LIVE.surveys?.[id] || {};
+      const pick =
+        live.publishedAt ||
+        live.lastSubmittedAt ||
+        surveyObj?.publishedAt ||
+        surveyObj?.date ||
+        null;
+      return fmt(pick);
+    }
+
+    /* Helper to pick the label we show for a survey */
+    function labelForList(s, index){
+      return s.displayTitle && s.displayTitle.trim().length
+        ? s.displayTitle
+        : `Q${index+1}: ${s.title}`;
+    }
+    function labelForPanel(s){
+      const idx = SURVEYS.findIndex(x=>x.id===s.id);
+      return s.displayTitle && s.displayTitle.trim().length
+        ? s.displayTitle
+        : `Q${idx+1}: ${s.title}`;
+    }
+
+    /* Render list (no locking; user can open any survey) */
+    function renderList(activeId){
+      $list.innerHTML = '';
+      const completedCount = SURVEYS.filter(s=>getStatus(s.id) === 'done').length;
+      $progress.textContent = `${completedCount} of ${SURVEYS.length} completed`;
+      let visibleCount = 0;
+
+      SURVEYS.forEach((s, i) => {
+        const isDone = (getStatus(s.id) === 'done');
+
+        if(filter === 'unfinished' && isDone) return;
+        if(filter === 'completed' && !isDone) return;
+
+        visibleCount += 1;
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'item' + (s.id === activeId ? ' active' : '');
+        item.dataset.id = s.id;
+        item.setAttribute('aria-pressed', s.id === activeId ? 'true' : 'false');
+        if(s.id === activeId) item.setAttribute('aria-current', 'true');
+
+        const stateClass = isDone ? 'survey-state done' : 'survey-state not-completed';
+        const pillText  = isDone ? '✓ Completed' : '○ Not completed';
+        const titleForList = labelForList(s, i);
+        const dateText = getDisplayDate(s.id, s);
+        const statusMarkup = filter === 'all'
+          ? `<div class="item-status"><span class="${stateClass}">${pillText}</span></div>`
+          : `<span class="visually-hidden">${pillText}</span>`;
+
+        item.innerHTML = `
+          <div class="left">
+            <div class="title">${titleForList}</div>
+            <div class="meta">Published: ${dateText || '—'}</div>
+          </div>
+          ${statusMarkup}`;
+
+        item.onclick = event => {
+          loadSurvey(s.id, { reveal:stackedLayout.matches, keyboard:event.detail === 0 });
+          window.WS5Logger?.log('1.1', undefined, { surveyId:s.id });
+        };
+        $list.appendChild(item);
+      });
+
+      if(!visibleCount){
+        const empty = document.createElement('p');
+        empty.className = 'list-empty';
+        empty.textContent = filter === 'completed' ? 'No completed micro-surveys yet.' : 'All micro-surveys are completed.';
+        $list.appendChild(empty);
+      }
+    }
+
+    /* Load a survey */
+    function loadSurvey(id, {reveal=false, keyboard=false} = {}){
+      const s = SURVEYS.find(x => x.id === id); if(!s) return;
+      const changed = current?.id !== id;
+      current = s;
+
+      $title.textContent = labelForPanel(s);
+
+      const dateText = getDisplayDate(s.id, s);
+      $date.textContent  = dateText ? `Published: ${dateText}` : '';
+
+      if ($note) {
+        $note.innerHTML =
+          `Please log in to your UoL account to complete the question. ` +
+          `<a href="${s.url}" target="_blank" rel="noopener">Open this micro-survey in a new tab</a>.<br>` +
+          `Your email address will not be collected.`;
+      }
+
+      if(changed || !$frame.getAttribute('src')) $frame.src = s.url;
+      $frame.title = `Micro-survey: ${labelForPanel(s)}`;
+      renderList(id);
+      updateCurrentState();
+
+      $panel.classList.remove('content-updated');
+      void $panel.offsetWidth;
+      $panel.classList.add('content-updated');
+      window.setTimeout(()=>$panel.classList.remove('content-updated'), 650);
+
+      if(reveal){
+        if(keyboard) $title.focus({preventScroll:true});
+        $title.scrollIntoView({behavior:reducedMotion.matches ? 'auto' : 'smooth', block:'start'});
+      }
+    }
+
+    function nextIncompleteId(){
+      if(!current || !SURVEYS.length) return null;
+      const start = SURVEYS.findIndex(s=>s.id === current.id);
+      for(let offset=1; offset<SURVEYS.length; offset+=1){
+        const candidate = SURVEYS[(start + offset) % SURVEYS.length];
+        if(getStatus(candidate.id) !== 'done') return candidate.id;
+      }
+      return null;
+    }
+
+    function updateCurrentState(){
+      if(!current){ $btn.disabled = true; return; }
+      const done = getStatus(current.id) === 'done';
+      $badge.textContent = done ? '✓ Completed' : '○ Not completed';
+      $badge.className   = done ? 'pill done' : 'pill not-completed';
+      $btn.textContent = 'I submitted this micro-survey';
+      $btn.disabled = done;
+      $btn.hidden = done;
+      $feedback.textContent = done ? '✓ Marked completed in this browser' : '';
+      $feedback.hidden = !done;
+      $guidance.hidden = done;
+      const nextId = done ? nextIncompleteId() : null;
+      $next.hidden = !nextId;
+      $next.dataset.id = nextId || '';
+      $controls.hidden = done && !nextId;
+    }
+
+    $btn.onclick = () => {
+      if(!current) return;
+      setStatus(current.id,'done');
+      window.WS5Logger?.log('1.3', undefined, { control:'record-completed', surveyId:current.id });
+    };
+
+    $next.onclick = event => {
+      const id = $next.dataset.id;
+      if(!id) return;
+      loadSurvey(id, { reveal:stackedLayout.matches, keyboard:event.detail === 0 });
+      window.WS5Logger?.log('1.1', undefined, { surveyId:id });
+    };
+
+    if($note){
+      $note.addEventListener('click', e=>{
+        const link = e.target.closest('a');
+        if(!link || !current) return;
+        window.WS5Logger?.log('1.1', undefined, { surveyId:current.id });
+      });
+    }
+
+    /* Admin helper (?admin=1) */
+    const urlParams = new URLSearchParams(location.search);
+    if(urlParams.get("admin")==="1"){
+      const admin = document.getElementById('admin');
+      admin.style.display='block';
+      document.getElementById('aAdd').onclick=()=>{
+        const title=document.getElementById('aTitle').value.trim();
+        const minutes=parseInt(document.getElementById('aMinutes').value.trim()||"1",10);
+        const audience=document.getElementById('aAudience').value.trim();
+        const school=document.getElementById('aSchool').value.trim();
+        const url=document.getElementById('aUrl').value.trim();
+        if(!title||!url){alert("Title and URL are required");return;}
+        SURVEYS.push({id:slugify(title),title,minutes,audience,school:school||"All",url});
+        renderList(current?.id);
+        ['aTitle','aMinutes','aAudience','aSchool','aUrl'].forEach(id=>document.getElementById(id).value="");
+      };
+      document.getElementById('aExport').onclick=()=>{
+        const out=document.getElementById('aOut');
+        out.textContent=JSON.stringify(SURVEYS,null,2);
+        out.style.display="block";
+        window.scrollTo({top:document.body.scrollHeight,behavior:reducedMotion.matches ? 'auto' : 'smooth'});
+      };
+    }
+    function slugify(s){
+      return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,60);
+    }
+
+    /* Boot: load surveys + live data, then render */
+    (async()=>{
+      await Promise.all([loadSurveys(), loadLive()]);
+      renderList();
+      if(SURVEYS[0]) loadSurvey(SURVEYS[0].id);
+    })();
+  </script>
+</body>
+</html>

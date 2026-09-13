@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>WS5 Logging Prototype Test</title>
+  <link rel="stylesheet" href="assets/css/brand.css"/>
+  <link rel="stylesheet" href="assets/css/header.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    body{background:#f7f9fb;color:#1b2a41}
+    .test-wrap{max-width:1200px;margin:32px auto;padding:0 24px 48px}
+    .notice{background:#fff4de;border:1px solid #f0d075;border-radius:12px;padding:14px 16px;font-weight:800;color:#6f4b00}
+    .panel{background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 22px rgba(28,39,51,.06);padding:18px;margin-top:16px}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+    .btn{appearance:none;border:1px solid var(--border);border-radius:999px;padding:10px 16px;font-weight:800;background:#fff;color:#1b2a41;cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg,var(--grad-a),var(--grad-b));color:#fff;border:0}
+    .btn.warn{background:#fdecec;border-color:#f4b4b4;color:#7a1818}
+    code{background:#eef2f7;border-radius:6px;padding:2px 6px}
+    table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:14px}
+    th,td{border-bottom:1px solid var(--border);padding:9px 8px;text-align:left;vertical-align:top}
+    th{font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:#f4f7fa}
+    td pre{white-space:pre-wrap;margin:0;font:inherit;color:#384454}
+    .empty{color:var(--muted);padding:18px 0}
+  </style>
+</head>
+<body>
+  <main class="test-wrap">
+    <h1>WS5 Logging Prototype Test</h1>
+    <div class="notice">Developer testing only - this local prototype is not approved for collecting real participant data.</div>
+
+    <section class="panel">
+      <div class="row">
+        <div>
+          <div>Anonymous session ID</div>
+          <code id="session-id"></code>
+        </div>
+        <div>
+          <button type="button" class="btn" id="new-session">Begin new anonymous test session</button>
+          <button type="button" class="btn primary" id="export-json">Export JSON</button>
+          <button type="button" class="btn primary" id="export-csv">Export CSV</button>
+          <button type="button" class="btn warn" id="clear-logs">Clear prototype logs</button>
+        </div>
+      </div>
+      <p id="summary"></p>
+    </section>
+
+    <section class="panel">
+      <h2>Captured Prototype Events</h2>
+      <div id="table-wrap"></div>
+    </section>
+  </main>
+
+  <script src="ws5-logger.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+
+    function logs(){
+      return window.WS5Logger ? WS5Logger.readLogs() : [];
+    }
+
+    function escapeText(value){
+      return String(value == null ? '' : value);
+    }
+
+    function download(filename, type, content){
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function csvCell(value){
+      return '"' + String(value == null ? '' : value).replace(/"/g, '""') + '"';
+    }
+
+    function toCsv(rows){
+      const head = ['userId','timestamp','eventCode','eventName','page','sessionId','metadata'];
+      const lines = [head.map(csvCell).join(',')];
+      rows.forEach(row => {
+        lines.push([
+          row.userId || 'Unknown User',
+          row.timestamp,
+          row.eventCode,
+          row.eventName,
+          row.page,
+          row.sessionId,
+          JSON.stringify(row.metadata || {})
+        ].map(csvCell).join(','));
+      });
+      return lines.join('\n');
+    }
+
+    function render(){
+      const rows = logs();
+      $('session-id').textContent = WS5Logger.getSessionId();
+      $('summary').textContent = `${rows.length} prototype event${rows.length === 1 ? '' : 's'} stored locally. Maximum retained: ${WS5Logger.maxEvents}.`;
+
+      const wrap = $('table-wrap');
+      wrap.textContent = '';
+      if(!rows.length){
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = 'No prototype events have been captured yet.';
+        wrap.appendChild(empty);
+        return;
+      }
+
+      const table = document.createElement('table');
+      const thead = document.createElement('thead');
+      const header = document.createElement('tr');
+      ['User ID','Timestamp','Code','Event name','Page','Safe metadata'].forEach(label => {
+        const th = document.createElement('th');
+        th.textContent = label;
+        header.appendChild(th);
+      });
+      thead.appendChild(header);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      rows.slice().reverse().forEach(row => {
+        const tr = document.createElement('tr');
+        [row.userId || 'Unknown User', row.timestamp, row.eventCode, row.eventName, row.page].forEach(value => {
+          const td = document.createElement('td');
+          td.textContent = escapeText(value);
+          tr.appendChild(td);
+        });
+        const meta = document.createElement('td');
+        const pre = document.createElement('pre');
+        pre.textContent = JSON.stringify(row.metadata || {});
+        meta.appendChild(pre);
+        tr.appendChild(meta);
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      wrap.appendChild(table);
+    }
+
+    $('export-json').addEventListener('click', () => {
+      const rows = logs().map(row => ({ ...row, userId: row.userId || 'Unknown User' }));
+      download('ws5-prototype-logs.json', 'application/json', JSON.stringify(rows, null, 2));
+    });
+
+    $('export-csv').addEventListener('click', () => {
+      download('ws5-prototype-logs.csv', 'text/csv', toCsv(logs()));
+    });
+
+    $('clear-logs').addEventListener('click', () => {
+      WS5Logger.clearLogs();
+      render();
+    });
+
+    $('new-session').addEventListener('click', () => {
+      WS5Logger.beginNewSession();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
