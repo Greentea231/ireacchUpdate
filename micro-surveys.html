@@ -181,9 +181,9 @@
       <div class="intro-grid">
         <div class="intro-copy">
           <h2 id="intro-heading">About these micro-surveys</h2>
-          <p>Each I-REACCH micro-survey has one question and takes less than a minute. Choose a micro-survey below, complete it in Microsoft Forms, then mark it completed in this browser.</p>
-          <p>They are open to all research staff, research-enabling staff and PGRs. You may be asked to log in with your University of Leicester email; the system won’t collect your name or email address. <a href="mailto:ireacch@leicester.ac.uk">Contact the I-REACCH team</a> if you would like more information before taking part.</p>
-          <p>By completing the survey, you confirm that you have read the information above and consent to take part in the study.</p>
+          <p>Each I-REACCH micro-survey has one question and takes less than a minute.</p>
+          <p>For eligible University of Leicester research staff, research-enabling staff and PGRs. University sign-in may be required to confirm eligibility.</p>
+          <p>Responses are intended to be anonymous. Read the study information before taking part; <a href="mailto:ireacch@leicester.ac.uk">contact the team</a> if needed. Completing a survey confirms your agreement to participate.</p>
         </div>
         <figure class="intro-figure">
           <img src="assets/img/speak-up.png" alt="Speak Up for Research Culture campaign: I-REACCH Micro Survey, one question only">
@@ -422,9 +422,7 @@
 
       if ($note) {
         $note.innerHTML =
-          `Please log in to your UoL account to complete the question. ` +
-          `<a href="${s.url}" target="_blank" rel="noopener">Open this micro-survey in a new tab</a>.<br>` +
-          `Your email address will not be collected.`;
+          `One question · <a href="${s.url}" target="_blank" rel="noopener">Open in Microsoft Forms (new tab)</a>`;
       }
 
       if(changed || !$frame.getAttribute('src')) $frame.src = s.url;

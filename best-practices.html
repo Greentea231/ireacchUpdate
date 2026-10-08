@@ -316,6 +316,22 @@
       .bp-split-right{ order:1; }
       .bp-split-left{ order:2; }
     }
+    /* Page-specific writing helper; no shared styles or input behaviour. */
+    .bp-writing-helper{ margin:12px 0 18px; padding:12px 14px; background:#F4F0FF; border-left:4px solid #6D28D9; border-radius:12px; color:#2F2940; line-height:1.5; overflow-wrap:anywhere; }
+    .bp-writing-helper h3{ display:flex; gap:7px; align-items:flex-start; margin:0 0 8px; font-size:.88rem; color:#5B21B6; }
+    .bp-writing-helper h3 svg{ width:19px; height:19px; flex-shrink:0; margin-top:1px; }
+    .bp-writing-helper [hidden]{ display:none; }
+    #bp-writing-placeholder{ margin:0; font-size:.84rem; color:#626078; }
+    #bp-writing-prompts{ margin:0; padding-left:18px; font-size:.94rem; font-weight:600; }
+    #bp-writing-prompts:has(> li:only-child){ padding-left:0; list-style:none; }
+    #bp-writing-prompts li + li{ margin-top:8px; }
+    .bp-writing-tags-label{ margin:10px 0 5px; font-size:.78rem; font-weight:700; color:#5B21B6; }
+    #bp-writing-chips{ display:flex; flex-wrap:wrap; gap:6px; }
+    .bp-writing-chip{ font:inherit; font-size:.78rem; padding:5px 9px; border:1px solid #bca6e5; border-radius:999px; background:#fff; color:#5B21B6; cursor:pointer; }
+    .bp-writing-chip[aria-pressed="true"]{ background:#e6dcfa; border-color:#6D28D9; }
+    .bp-writing-chip:disabled{ opacity:.55; cursor:default; }
+    .bp-writing-chip:focus-visible{ outline:2px solid #6D28D9; outline-offset:2px; }
+    .bp-writing-note{ margin:10px 0 0; font-size:.72rem; color:#6F687D; }
   </style>
 </head>
 <body>
@@ -357,8 +373,8 @@
       <summary>How to browse and contribute &#9660;</summary>
       <div class="bp-guide-body">
         <p><strong>Step 1 — Browse.</strong> Use the search and filter tools below to find practices from other Schools and Colleges. Click any tag on a card to filter by that theme.</p>
-        <p><strong>Step 2 — Vote.</strong> On each card, tell us whether your School does something similar, is considering it, has had mixed results, or finds it not applicable. This helps others understand how widely a practice is used across the University.</p>
-        <p><strong>Step 3 — Share.</strong> Use “Share a practice” to add a temporary preview to this page. This prototype does not submit it to the WS5 team.</p>
+        <p><strong>Step 2 — Vote.</strong> On each card, tell us whether your School does something similar, is considering it, has had mixed results, or finds it not applicable. Your choices, tally changes and optional reasons stay in this browser; they are not University-wide results.</p>
+        <p><strong>Step 3 — Share.</strong> “Add preview to this page” creates a temporary browser preview, not a production University submission. Drafts are saved in this browser. Avoid names or unnecessary identifying details in practice descriptions. Future University storage and authentication depend on the approved production setup.</p>
       </div>
     </details>
 
@@ -436,6 +452,19 @@
         <div class="counter"><span id="c-desc">0/800</span></div>
         <p class="bp-field-error" id="bp-desc-error" hidden>Enter a description.</p>
 
+        <section class="bp-writing-helper" id="bp-writing-helper" aria-labelledby="bp-writing-title">
+          <h3 id="bp-writing-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M8.5 14.5a6 6 0 1 1 7 0C14.5 15.2 14 16 14 18h-4c0-2-.5-2.8-1.5-3.5Z"/></svg>Optional practice suggestion</h3>
+          <div aria-live="polite" aria-atomic="true">
+            <p id="bp-writing-placeholder">Start describing the practice and optional prompts will appear here.</p>
+            <ul id="bp-writing-prompts" hidden></ul>
+          </div>
+          <div id="bp-writing-tags" hidden>
+            <p class="bp-writing-tags-label">Suggested tags</p>
+            <div id="bp-writing-chips" role="group" aria-label="Suggested existing tags"></div>
+          </div>
+          <p class="bp-writing-note">These suggestions use simple on-page rules and do not send your contribution to an AI service.</p>
+        </section>
+
         <label>Tags <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional — select up to 3, or add one of your own)</span></label>
         <div class="bp-tag-chip-group" id="bp-tag-chips" role="group" aria-label="Select tags">
           <button type="button" class="bp-tag-chip-btn" data-tag="mentoring"      aria-pressed="false">mentoring</button>
@@ -462,7 +491,7 @@
         </div>
 
         <!-- Trust statement -->
-        <p class="bp-trust-note" role="note">This prototype adds the practice only to the current page for preview. It is not submitted or saved as a shared practice. Avoid including personal data in the description.</p>
+        <p class="bp-trust-note" role="note">Avoid including names or unnecessary information that could identify you or somebody else.</p>
 
         <div class="bp-row" style="margin-top:16px;align-items:center">
           <button class="bp-btn" id="bp-add" type="button">Add preview to this page</button>
@@ -565,6 +594,7 @@
 
   <script src="ws5-logger.js"></script>
   <script src="script.js"></script>
+  <script src="assets/js/best-practice-suggestions.js"></script>
   <script>
     window.WS5Logger?.logPageView('3.0');
     let bestPracticeSearchLogged = false;
@@ -715,6 +745,7 @@
 
     /* ---------- Tag chip-toggle system ---------- */
     let selectedChips = new Set();
+    let practiceSuggestions;
 
     function renderTagPills(){
       const pEl = document.getElementById('bp-selected-tags');
@@ -751,6 +782,7 @@
         b.style.opacity = (!on && atLimit) ? '0.45' : '';
       });
       renderTagPills();
+      practiceSuggestions?.refresh();
     }
 
     document.getElementById('bp-tag-chips').addEventListener('click', e=>{
@@ -877,7 +909,7 @@
         voteGroup.appendChild(countEl_card);
         const localNote = document.createElement('p');
         localNote.className = 'bp-local-note';
-        localNote.textContent = 'Your choice and any tally change are stored only in this browser.';
+        localNote.textContent = 'Your vote is stored only in this browser and is not linked to your name or email in this prototype.';
         voteGroup.appendChild(localNote);
         card.appendChild(voteGroup);
 
@@ -1154,6 +1186,13 @@
 
     /* ---------- Boot ---------- */
     render();
+    practiceSuggestions = window.BestPracticeSuggestions?.attach({
+      title: titleEl, description: descEl,
+      vocabulary: BP_PREDEFINED_TAGS, maxTags: MAX_CHIP_TAGS,
+      selected: () => [...selectedChips],
+      toggleTag: tag => [...document.querySelectorAll('#bp-tag-chips .bp-tag-chip-btn')]
+        .find(button => button.dataset.tag === tag)?.click()
+    });
   </script>
 </body>
 </html>

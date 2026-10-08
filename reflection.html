@@ -161,7 +161,7 @@
 
     .q-textarea{
       width:100%; min-height:160px; resize:vertical;
-      padding:14px 16px; border:1px solid var(--border); border-radius:12px;
+      display:block; padding:14px 16px; border:1px solid var(--border); border-radius:12px; background:#fff;
       font:inherit; font-size:1rem; line-height:1.6;
       box-sizing:border-box; color:var(--ink);
     }
@@ -316,6 +316,20 @@
     .r-info-icon{ width:24px; height:24px; color:#356b8e; flex-shrink:0; }
     .r-info-label{ font-size:.9rem; font-weight:800; color:#1b2a41; line-height:1.35; }
     .r-info-text{ font-size:.88rem; color:#43576a; line-height:1.55; }
+    .r-privacy-details{ max-width:840px; margin:-8px auto 20px; color:#43576a; font-size:.84rem; line-height:1.55; }
+    .r-privacy-details summary{ cursor:pointer; padding:8px 0; width:fit-content; }
+    .r-privacy-details summary:focus-visible{ outline:2px solid var(--gradA); outline-offset:3px; border-radius:8px; }
+    .r-privacy-details p{ margin:6px 0 10px; }
+    .q-suggestions{ margin-top:12px; padding:12px 16px; border-left:4px solid #6D28D9; border-radius:12px; background:#F4F0FF; color:#2F2940; font-size:.94rem; line-height:1.5; overflow-wrap:anywhere; }
+    .q-suggestions:has(.q-suggestions-placeholder:not([hidden])){ background:#F4F0FF; border-left-color:#6D28D9; }
+    .q-suggestions[hidden]{ display:none; }
+    .q-suggestions h3{ display:flex; align-items:flex-start; gap:7px; margin:0 0 6px; font-size:.9rem; font-weight:700; color:#5B21B6; }
+    .q-suggestions-icon{ width:19px; height:19px; flex-shrink:0; margin-top:1px; color:#5B21B6; stroke-width:1.9; }
+    .q-suggestions-placeholder{ margin:0; color:#626078; font-size:.86rem; }
+    .q-suggestions ul{ margin:0; padding:3px 0 0 18px; font-size:1.03rem; font-weight:600; }
+    .q-suggestions ul:has(> li:only-child){ padding-left:0; list-style:none; }
+    .q-suggestions li + li{ margin-top:10px; }
+    .q-suggestions-note{ margin:13px 0 0; font-size:.72rem; color:#6F687D; }
     @media(max-width:900px){
       .r-info-strip{ grid-template-columns:repeat(2,1fr); }
     }
@@ -465,19 +479,25 @@
         <div class="r-info-col">
           <svg class="r-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           <div class="r-info-label">Who sees responses</div>
-          <div class="r-info-text">Only the I-REACCH evaluation team at the University of Leicester.</div>
+          <div class="r-info-text">Nothing is sent automatically. If you email your reflection, the recipients can see it and your email address.</div>
         </div>
         <div class="r-info-col">
           <svg class="r-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           <div class="r-info-label">Anonymity</div>
-          <div class="r-info-text">Responses are not linked to your name or email address.</div>
+          <div class="r-info-text">Drafts stay on this device. Sending your reflection by email will reveal the email address you send it from.</div>
         </div>
         <div class="r-info-col">
           <svg class="r-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           <div class="r-info-label">What happens after</div>
-          <div class="r-info-text">Responses are copied to your clipboard. Paste to <a href="mailto:ireacch@leicester.ac.uk" style="color:inherit;text-decoration:underline">ireacch@leicester.ac.uk</a> with subject <b>I-REACCH Reflection</b>.</div>
+          <div class="r-info-text">Copy your reflection and, if you choose, email it to <a href="mailto:ireacch@leicester.ac.uk" style="color:inherit;text-decoration:underline">ireacch@leicester.ac.uk</a> with subject <b>I-REACCH Reflection</b>.</div>
         </div>
       </div>
+
+      <details class="r-privacy-details">
+        <summary>Privacy &amp; anonymity details</summary>
+        <p>Nothing is automatically submitted from this page. Your draft stays on this device unless you choose to share it. If you send it by email, the recipient can see the email address you send it from.</p>
+        <p>Avoid names or unnecessary details that could identify you, colleagues or anyone else. Specific details about a small research group, a unique event, personal circumstances, demographics or another distinctive situation may identify someone even without a name.</p>
+      </details>
 
       <div class="q-card">
 
@@ -514,6 +534,14 @@
             aria-describedby="q-error"
             maxlength="600"></textarea>
           <div class="q-charcount"><span id="q-cc">0</span> / 600</div>
+          <div aria-live="polite" aria-atomic="true">
+            <section class="q-suggestions" id="q-suggestions" aria-labelledby="q-suggestions-title">
+              <h3 id="q-suggestions-title"><svg class="q-suggestions-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M8.5 14.5a6 6 0 1 1 7 0C14.5 15.2 14 16 14 18h-4c0-2-.5-2.8-1.5-3.5Z"/></svg><span>Optional reflection prompt</span></h3>
+              <p class="q-suggestions-placeholder">Start writing and an optional prompt will appear here.</p>
+              <ul id="q-suggestions-list" hidden></ul>
+              <p class="q-suggestions-note">These suggestions use simple on-page rules and do not send your Reflection to an AI service.</p>
+            </section>
+          </div>
         </div>
 
         <!-- Optional enrichment (collapsible) -->
@@ -631,6 +659,7 @@
           To contribute to the I-REACCH study, paste them into an email to
           <a href="mailto:ireacch@leicester.ac.uk">ireacch@leicester.ac.uk</a>
           with the subject line <b>I-REACCH Reflection</b>.
+          Sending your reflection by email will reveal the email address you send it from.
         </p>
         <p class="done-note">Your responses are stored only on this device — nothing is sent automatically. Once shared, your reflections are reviewed and used to identify common themes across the University.</p>
         <button type="button" class="btn-again" id="btn-again">Start a new reflection</button>
@@ -648,6 +677,7 @@
 
   <script src="ws5-logger.js"></script>
   <script src="script.js"></script>
+  <script src="assets/js/reflection-suggestions.js"></script>
   <script>
     window.WS5Logger?.logPageView('2.0');
     let reflectionFieldFocusLogged = false;
@@ -769,6 +799,7 @@
           state.draft         = combined;
           state.draftVoice    = true;
           saveState(state);
+          reflectionSuggestions?.schedule();
         };
 
         recognition.onend   = resetMicBtn;
@@ -804,11 +835,14 @@
     const btnAgain      = document.getElementById('btn-again');
     const pOptions      = document.getElementById('p-options');
     const quoteOk       = document.getElementById('quote-ok');
+    const reflectionSuggestions = window.ReflectionSuggestions?.attach(qInput,
+      document.getElementById('q-suggestions'), document.getElementById('q-suggestions-list'));
 
     /* ============================================================
        View switching (unchanged)
     ============================================================ */
     function showView(id){
+      if(id !== 'view-question') reflectionSuggestions?.clear();
       [viewQ, viewP, viewDone].forEach(v=>{
         v.classList.remove('active');
         v.setAttribute('aria-hidden','true');
@@ -1026,6 +1060,7 @@
       qText.textContent     = QUESTIONS[i];
       qInput.value          = state.draft || '';
       qCC.textContent       = (state.draft || '').length;
+      reflectionSuggestions?.refresh();
 
       clearIntensity();
       clearConfidence();
@@ -1123,6 +1158,7 @@
       const len = qInput.value.length;
       qCC.textContent = len;
       state.draft = qInput.value;
+      reflectionSuggestions?.schedule();
       if(qInput.value.trim()){
         qError.hidden = true;
         qInput.removeAttribute('aria-invalid');
